@@ -1,0 +1,3 @@
+# Still working on ...
+## This C library provides efficient implementations of linear regression algorithms, including support for stochastic gradient descent (SGD) and data normalization techniques. It is designed for easy integration into your C projects, enabling you to perform regression analysis on various datasets.
+
