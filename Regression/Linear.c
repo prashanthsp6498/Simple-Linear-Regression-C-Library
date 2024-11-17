@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-Beta* Initialize_Model(){
-  Beta* model = (Beta*)malloc(2 * sizeof(Beta));
-  if(!model){
-    fprintf(stderr," Memory allocation failed\n");
+Beta *Initialize_Model() {
+  Beta *model = (Beta *)malloc(2 * sizeof(Beta));
+  if (!model) {
+    fprintf(stderr, " Memory allocation failed\n");
     return NULL;
   }
 
@@ -20,16 +20,13 @@ Beta* Initialize_Model(){
 
 Beta *Fit_Model(float X[], float y[], size_t n, size_t m) {
 
-  Beta* model = Initialize_Model();
+  Beta *model = Initialize_Model();
   float sumXY = 0.0;
   float sumX = 0.0;
   float sumY = 0.0;
   float sumX2 = 0.0;
-  float x_min = X[0];
-  float x_max = X[0];
 
-
-  if (n != m && n == 0 && m == 0) {
+  if (n != m || n == 0 || m == 0) {
     fprintf(
         stderr,
         "Size of Independent and Dependent variable are not same. check the "
@@ -44,14 +41,6 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m) {
     sumX += X[i];
     sumY += y[i];
     sumX2 += X[i] * X[i];
-    if(X[i] < x_min) x_min = X[i];
-    if(X[i] > x_max) x_max = X[i];
-  }
-  if(x_min == x_max){
-    fprintf(stderr,"All values of X are the same; cannot compute slope \n");
-    model->slope = 0;
-    model->intercept = (sumY / n);
-    return  model;
   }
 
   float denominator = n * sumX2 - sumX * sumX;
@@ -60,12 +49,13 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m) {
     Free_Model(model);
     return NULL;
   }
-  //calculate slope and intercept
+  // calculate slope and intercept
   model->slope = (n * sumXY - sumX * sumY) / denominator;
 
   model->intercept = (sumY - model->slope * sumX) / n;
 
-  printf("SumX: %f\t  sumXY: %f\t   sumY: %f\t    sumX2: %f slo: %.2f inte: "
+  printf("SumX: %f\t  sumXY: %f\t   sumY: %f\t    sumX2: %f slope: %.2f "
+         "intercept: "
          "%.2f\n",
          sumX, sumXY, sumY, sumX2, model->slope, model->intercept);
 

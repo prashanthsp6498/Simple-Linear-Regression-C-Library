@@ -9,10 +9,27 @@ typedef struct {
   size_t num_rows;
 } getFile;
 
-getFile *Read_Dataset(const char file_name[100], const int Data_feature,
+typedef struct {
+  float *X_Train;
+  float *Y_Train;
+  float *X_Test;
+  float *Y_Test;
+  size_t train_size;
+  size_t test_size;
+} SplitData;
+
+typedef struct {
+  float *X;
+  float *Y;
+} NormVar;
+
+getFile *Read_Dataset(const char *file_name, const int Data_feature,
                       const int target_feature);
 
-void Normalize(float[],float [], size_t);
-float deNormalize(float);
+NormVar *Normalize(float[], float[], size_t, float *, float *);
+
+float *DeNormalize(float[], float, float, size_t);
+
+SplitData Split_Dataset(float[], float[], size_t, float);
 
 #endif
