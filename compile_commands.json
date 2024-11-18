@@ -1,0 +1,53 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I.",
+      "-IRegression",
+      "-c",
+      "-o",
+      "Test/test.o",
+      "Test/test.c"
+    ],
+    "directory": "/home/hexa/C_Project",
+    "file": "/home/hexa/C_Project/Test/test.c",
+    "output": "/home/hexa/C_Project/Test/test.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I.",
+      "-IRegression",
+      "-c",
+      "-o",
+      "Regression/Linear.o",
+      "Regression/Linear.c"
+    ],
+    "directory": "/home/hexa/C_Project",
+    "file": "/home/hexa/C_Project/Regression/Linear.c",
+    "output": "/home/hexa/C_Project/Regression/Linear.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I.",
+      "-IRegression",
+      "-c",
+      "-o",
+      "EDA/DataAnalysis.o",
+      "EDA/DataAnalysis.c"
+    ],
+    "directory": "/home/hexa/C_Project",
+    "file": "/home/hexa/C_Project/EDA/DataAnalysis.c",
+    "output": "/home/hexa/C_Project/EDA/DataAnalysis.o"
+  }
+]
