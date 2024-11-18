@@ -4,8 +4,8 @@
 #define MAX_SIZE 1024
 
 typedef struct {
-  float X[MAX_SIZE];
-  float Y[MAX_SIZE];
+  float *X;
+  float *Y;
   size_t num_rows;
 } getFile;
 

@@ -6,6 +6,7 @@
 #include <time.h>
 #define MAX_LINE_LENGTH 1024
 
+// Read the Dataset Files
 getFile *Read_Dataset(const char *file_name, const int independent_var,
                       const int target_var) {
   // Create an Instances
@@ -30,13 +31,17 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
   fseek(file, 0, SEEK_SET);
 
   int maxEnt = get_file_size / (2 * sizeof(float));
-  getFile *dependencies = malloc(maxEnt * sizeof(getFile));
+  getFile *dependencies = malloc(sizeof(getFile));
 
-  if (dependencies == NULL) {
+  if (!dependencies) {
     fprintf(stderr, "Memory allocation failed\n");
     fclose(file);
     free(dependencies);
   }
+
+  dependencies->X = malloc(maxEnt * sizeof(float));
+  dependencies->Y = malloc(maxEnt * sizeof(float));
+
   char buffer[MAX_LINE_LENGTH];
 
   int row = 0;
@@ -71,22 +76,28 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
 
   fclose(file);
 
-  return (dependencies);
+  return dependencies;
 }
 
+
+// Split dataset into Train and Test based on the relevant ratio
 SplitData Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
-  SplitData split_data;
+  SplitData *split_data = (SplitData *)malloc(sizeof(SplitData));
 
-  split_data.train_size = (size_t)(n * train_ratio);
-  split_data.test_size = n - split_data.train_size;
+  if (X == NULL || Y == NULL) {
+    fprintf(stderr, "Error X and Y both are null");
+  }
 
-  split_data.X_Train = (float *)malloc(split_data.train_size * sizeof(float));
-  split_data.Y_Train = (float *)malloc(split_data.train_size * sizeof(float));
-  split_data.X_Test = (float *)malloc(split_data.test_size * sizeof(float));
-  split_data.Y_Test = (float *)malloc(split_data.test_size * sizeof(float));
+  split_data->train_size = (size_t)(n * train_ratio);
+  split_data->test_size = n - split_data->train_size;
 
-  if (!split_data.X_Train || !split_data.Y_Train || !split_data.X_Test ||
-      !split_data.Y_Test) {
+  split_data->X_Train = (float *)malloc(split_data->train_size * sizeof(float));
+  split_data->Y_Train = (float *)malloc(split_data->train_size * sizeof(float));
+  split_data->X_Test = (float *)malloc(split_data->test_size * sizeof(float));
+  split_data->Y_Test = (float *)malloc(split_data->test_size * sizeof(float));
+
+  if (!split_data->X_Train || !split_data->Y_Train || !split_data->X_Test ||
+      !split_data->Y_Test) {
     fprintf(stderr, "Memory allocation is failed for Split Data\n");
     exit(1);
   }
@@ -104,19 +115,20 @@ SplitData Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
     indicies[j] = temp;
   }
 
-  for (size_t i = 0; i < split_data.train_size; i++) {
-    split_data.X_Train[i] = X[indicies[i]];
-    split_data.Y_Train[i] = Y[indicies[i]];
+  for (size_t i = 0; i < split_data->train_size; i++) {
+    split_data->X_Train[i] = X[indicies[i]];
+    split_data->Y_Train[i] = Y[indicies[i]];
   }
-  for (size_t i = 0; i < split_data.test_size; i++) {
-    split_data.X_Test[i] = X[indicies[split_data.train_size + 1]];
-    split_data.Y_Test[i] = Y[indicies[split_data.train_size + 1]];
+  for (size_t i = 0; i < split_data->test_size; i++) {
+    *split_data->X_Test = X[indicies[split_data->train_size + 1]];
+    *split_data->Y_Test = Y[indicies[split_data->train_size + 1]];
   }
 
   free(indicies);
-  return split_data;
+  return *split_data;
 }
 
+// Normalize the data-point into 0-1 for efficient result
 NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
 
   // Scaling is little difficult to implement for me ?
@@ -128,15 +140,19 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
     return NULL;
   }
 
-  NormVar *norm = malloc(sizeof(NormVar));
-
-  *y_min = FLT_MAX;
-  *y_max = -FLT_MAX;
+  NormVar *norm = (NormVar *)malloc(sizeof(NormVar));
 
   if (norm == NULL) {
     fprintf(stderr, "Error Normalize().X().Y() returned null\n");
     return NULL;
   }
+
+  norm->X = (float *)malloc(n * sizeof(float));
+  norm->Y = (float *)malloc(n * sizeof(float));
+
+  *y_min = FLT_MAX;
+  *y_max = -FLT_MAX;
+
   for (size_t i = 0; i < n; i++) {
     if (X[i] < x_min)
       x_min = X[i];
@@ -159,15 +175,20 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
   }
 
   for (size_t i = 0; i < n; i++) {
-    *norm->X = (X[i] - x_min) / (x_max - x_min);
-    *norm->Y = (Y[i] - *y_min) / (*y_max - *y_min);
+    // make sure you are creating and initializing the pointer correctly
+    norm->X[i] = (X[i] - x_min) / (x_max - x_min);
+    norm->Y[i] = (Y[i] - *y_min) / (*y_max - *y_min);
   }
 
-  printf("%f", *norm->X);
+  if (norm->X == 0 || norm->Y == 0) {
+    printf("X and Y values are %f %f", *norm->X, *norm->Y);
+  }
 
   return norm;
 }
 
+
+// Denormalize is used to convert back to original value, i.e Example 0.80 -> 989.00
 float *DeNormalize(float Y[], float y_max, float y_min, size_t n) {
   for (size_t i = 0; i < n; i++) {
     Y[i] = Y[i] * (y_max - y_min) + y_min;

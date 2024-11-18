@@ -5,15 +5,20 @@
 #include <stdlib.h>
 #include <time.h>
 
+
 Beta *Initialize_Model() {
   Beta *model = (Beta *)malloc(2 * sizeof(Beta));
   if (!model) {
-    fprintf(stderr, " Memory allocation failed\n");
+    fprintf(stderr, " Memory allocation failed. Please check the 'Initialize_Model()' func\n");
     return NULL;
   }
 
   model->slope = ((float)rand() / RAND_MAX) * 0.01;
   model->intercept = ((float)rand() / RAND_MAX) * 0.01;
+
+  if (!model->slope || !model->intercept) {
+    fprintf(stderr, "Memory failed, while allocating blocks for 'Model->slope and Model->intercept'");
+  }
 
   return model;
 }
@@ -62,6 +67,7 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m) {
   return model;
 }
 
+// Predict the Output
 float *Predict_Model(float X[], size_t size, Beta model) {
 
   float *prediction = (float *)malloc(size * sizeof(float));

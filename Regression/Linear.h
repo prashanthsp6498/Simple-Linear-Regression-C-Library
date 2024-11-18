@@ -1,5 +1,3 @@
-// here only Declare Function
-// Define in corresponding Linear.c file
 #ifndef Linear
 #define Linear()
 #include <stdio.h>
