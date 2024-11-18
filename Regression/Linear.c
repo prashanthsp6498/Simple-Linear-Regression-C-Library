@@ -7,7 +7,7 @@
 
 
 Beta *Initialize_Model() {
-  Beta *model = (Beta *)malloc(2 * sizeof(Beta));
+  Beta *model = (Beta *)malloc(sizeof(Beta));
   if (!model) {
     fprintf(stderr, " Memory allocation failed. Please check the 'Initialize_Model()' func\n");
     return NULL;
@@ -16,9 +16,6 @@ Beta *Initialize_Model() {
   model->slope = ((float)rand() / RAND_MAX) * 0.01;
   model->intercept = ((float)rand() / RAND_MAX) * 0.01;
 
-  if (!model->slope || !model->intercept) {
-    fprintf(stderr, "Memory failed, while allocating blocks for 'Model->slope and Model->intercept'");
-  }
 
   return model;
 }
@@ -49,7 +46,7 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m) {
   }
 
   float denominator = n * sumX2 - sumX * sumX;
-  if (denominator == 0) {
+  if (fabs(denominator) < 1e-6) {
     fprintf(stderr, "Denominator is zero");
     Free_Model(model);
     return NULL;
