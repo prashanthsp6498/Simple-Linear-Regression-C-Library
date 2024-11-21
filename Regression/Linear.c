@@ -5,17 +5,16 @@
 #include <stdlib.h>
 #include <time.h>
 
-
 Beta *Initialize_Model() {
   Beta *model = (Beta *)malloc(sizeof(Beta));
   if (!model) {
-    fprintf(stderr, " Memory allocation failed. Please check the 'Initialize_Model()' func\n");
+    fprintf(stderr, " Memory allocation failed. Please check the "
+                    "'Initialize_Model()' func\n");
     return NULL;
   }
 
   model->slope = ((float)rand() / RAND_MAX) * 0.01;
   model->intercept = ((float)rand() / RAND_MAX) * 0.01;
-
 
   return model;
 }
@@ -132,6 +131,21 @@ float Cost_Function(float actualValue[], float *predictedValue, size_t sizeX,
   costFunction /= (2 * sizeX);
 
   return costFunction;
+}
+
+float RMSE(float *ActualData, float *PredictedData, size_t n) {
+  // Formula: sqrt((PredictedData - ActualData)^2)/n
+  //
+  float *error = malloc(sizeof(float));
+  for (size_t i = 0; i < n; i++) {
+    *error = PredictedData - ActualData;
+  }
+
+  float rmse = 0.0;
+
+  rmse = sqrt(*error/n);
+
+  return rmse;
 }
 
 void Free_Model(Beta *model) {

@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I. -IRegression
+CFLAGS = -g -Wall -Wextra -Werror -I. -IRegression
 LDFLAGS = -lm
 
 # Source files
