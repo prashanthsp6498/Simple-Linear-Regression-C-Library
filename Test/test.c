@@ -40,7 +40,7 @@ int main() {
 
   float *prediction = Predict_Model(split_data.X_Test, datasize, *model);
 
-  float* cost = (float *)malloc(sizeof(float));
+  float *cost = (float *)malloc(sizeof(float));
 
   *cost = Cost_Function(split_data.X_Test, prediction, size_x, size_y);
   float *denormVar = DeNormalize(prediction, y_min, y_max, size_x);
@@ -53,9 +53,16 @@ int main() {
            prediction[i], cost[i]);
   }
 
- float rmse = RMSE(split_data.X_Test, prediction , size_x);
-  printf("Accuracy: %f\n", rmse);
+  printf("Before Test Data: %zu\n", size_x);
+  for (size_t i = 0; i < size_x; i++) {
+    printf("Actual: %.2f, Predicted: %.2f\n", split_data.X_Test[i], prediction[i]);
+  }
 
+  float rmse = RMSE(split_data.X_Test, prediction, size_x);
+  printf("RMSE: %.4f", rmse);
+
+  float mse = MSE(split_data.X_Test, prediction, size_x);
+  printf("\tMSE: %.2f\n", mse);
   // printf("Size of X and Y: %ld %ld", size_x, size_y);
 
   Free_Model(model);

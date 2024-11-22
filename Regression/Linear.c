@@ -135,17 +135,39 @@ float Cost_Function(float actualValue[], float *predictedValue, size_t sizeX,
 
 float RMSE(float *ActualData, float *PredictedData, size_t n) {
   // Formula: sqrt((PredictedData - ActualData)^2)/n
-  //
-  float *error = malloc(sizeof(float));
+
+  float error_sum = 0.0;
+  size_t validCount = 0;
   for (size_t i = 0; i < n; i++) {
-    *error = PredictedData - ActualData;
+    if (isnan(PredictedData[i]) || isnan(ActualData[i]) ||
+        isinf(PredictedData[i]) || isinf(PredictedData[i])) {
+      printf("Invalid Data at index: %zu\n", i);
+      continue;
+    }
+    float error = PredictedData[i] - ActualData[i];
+    error_sum += error * error;
+    validCount++;
+  }
+  if (validCount == 0) {
+    printf("Error");
+    return INFINITY;
   }
 
-  float rmse = 0.0;
-
-  rmse = sqrt(*error/n);
+  float rmse = sqrt(error_sum / validCount);
 
   return rmse;
+}
+
+float MSE(float *ActualData, float *PredictedData, size_t n) {
+
+  float error_sum = 0.0;
+  for (size_t i = 0; i < n; i++) {
+    float error = ActualData[i] - PredictedData[i];
+    error_sum += error * error;
+  }
+
+  float mse = error_sum / n;
+  return mse;
 }
 
 void Free_Model(Beta *model) {
