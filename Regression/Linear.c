@@ -137,7 +137,7 @@ float RMSE(float *ActualData, float *PredictedData, size_t n) {
   // Formula: sqrt((PredictedData - ActualData)^2)/n
 
   float error_sum = 0.0;
-  size_t validCount = 0;
+  size_t validCount = 0.0;
   for (size_t i = 0; i < n; i++) {
     if (isnan(PredictedData[i]) || isnan(ActualData[i]) ||
         isinf(PredictedData[i]) || isinf(PredictedData[i])) {

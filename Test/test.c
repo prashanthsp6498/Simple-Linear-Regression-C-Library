@@ -53,10 +53,6 @@ int main() {
            prediction[i], cost[i]);
   }
 
-  printf("Before Test Data: %zu\n", size_x);
-  for (size_t i = 0; i < size_x; i++) {
-    printf("Actual: %.2f, Predicted: %.2f\n", split_data.X_Test[i], prediction[i]);
-  }
 
   float rmse = RMSE(split_data.X_Test, prediction, size_x);
   printf("RMSE: %.4f", rmse);
