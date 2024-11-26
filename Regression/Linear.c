@@ -1,5 +1,8 @@
 #include "Linear.h"
+#include "EDA/DataAnalysis.h"
+#include <complex.h>
 #include <math.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -116,7 +119,6 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
 float Cost_Function(float actualValue[], float *predictedValue, size_t sizeX,
                     size_t sizeY) {
   float costFunction = 0.0;
-  float numerator;
 
   if (sizeX != sizeY) {
     fprintf(stderr,
@@ -124,8 +126,10 @@ float Cost_Function(float actualValue[], float *predictedValue, size_t sizeX,
   }
 
   for (size_t i = 0; i < sizeX; i++) {
-    numerator = pow((predictedValue[i] - actualValue[i]), 2);
-    costFunction += numerator;
+    if (actualValue[i] != 0 && predictedValue[i] != 0) {
+      float error = predictedValue[i] - actualValue[i];
+      costFunction += error * error;
+    }
   }
 
   costFunction /= (2 * sizeX);
@@ -133,45 +137,74 @@ float Cost_Function(float actualValue[], float *predictedValue, size_t sizeX,
   return costFunction;
 }
 
-float RMSE(float *ActualData, float *PredictedData, size_t n) {
+metricResult RMSE(float *ActualData, float *PredictedData, size_t n) {
   // Formula: sqrt((PredictedData - ActualData)^2)/n
+  metricResult result = {0.0, false};
+
+  if (n == 0) {
+    fprintf(stderr, "Error: Number of data points must be greater than zero\n");
+    return result;
+  }
 
   float error_sum = 0.0;
-  size_t validCount = 0.0;
+  size_t valid_count = 0;
   for (size_t i = 0; i < n; i++) {
     if (isnan(PredictedData[i]) || isnan(ActualData[i]) ||
-        isinf(PredictedData[i]) || isinf(PredictedData[i])) {
-      printf("Invalid Data at index: %zu\n", i);
+        isinf(ActualData[i]) || isinf(PredictedData[i])) {
+      fprintf(stderr, "Skipping Invalid data point\n");
       continue;
     }
     float error = PredictedData[i] - ActualData[i];
     error_sum += error * error;
-    validCount++;
-  }
-  if (validCount == 0) {
-    printf("Error");
-    return INFINITY;
+    valid_count = valid_count+1;
   }
 
-  float rmse = sqrt(error_sum / validCount);
+  if (valid_count == 0) {
+    fprintf(stderr, "Error: No valid data points for RMSE Calculations\n");
+    result.is_valid = false;
+    result.value = NAN;
+    return result;
+  }
 
-  return rmse;
+  result.value = sqrt(error_sum / valid_count);
+  result.is_valid = true;
+
+  return result;
 }
 
-float MSE(float *ActualData, float *PredictedData, size_t n) {
+metricResult MSE(float *ActualData, float *PredictedData, size_t n) {
+  metricResult result = {0.0, false};
 
   float error_sum = 0.0;
+  size_t validCount = 0;
   for (size_t i = 0; i < n; i++) {
+    if (isnan(ActualData[i]) || isnan(PredictedData[i]) ||
+        isinf(PredictedData[i]) || isinf(ActualData[i])) {
+      fprintf(stderr, "Invalid Data at index: %zu\n", i);
+      continue;
+    }
+
     float error = ActualData[i] - PredictedData[i];
     error_sum += error * error;
+    validCount++;
   }
 
-  float mse = error_sum / n;
-  return mse;
+  if (validCount == 0) {
+    fprintf(stderr, "Error: No valid Data Points\n");
+    result.is_valid = false;
+    result.value = NAN;
+    return result;
+  }
+
+  result.value = error_sum / validCount;
+  result.is_valid = true;
+
+  return result;
 }
 
 void Free_Model(Beta *model) {
-  if (model != NULL) {
+  if (model) {
     free(model);
   }
 }
+
