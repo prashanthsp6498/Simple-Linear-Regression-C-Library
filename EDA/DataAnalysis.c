@@ -30,8 +30,8 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
   printf("Opening the File");
   fseek(file, 0, SEEK_SET);
 
-  int maxEnt = get_file_size / (2 * sizeof(float));
-  getFile *dependencies = malloc(sizeof(getFile));
+  int maxEnt = get_file_size / (2 * sizeof(getFile));
+  getFile *dependencies = (getFile *)malloc(sizeof(getFile));
 
   if (!dependencies) {
     fprintf(stderr, "Memory allocation failed\n");
@@ -39,8 +39,8 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
     free(dependencies);
   }
 
-  dependencies->X = malloc(maxEnt * sizeof(float));
-  dependencies->Y = malloc(maxEnt * sizeof(float));
+  dependencies->X = (float *)malloc(sizeof(float));
+  dependencies->Y = (float *)malloc(sizeof(float));
 
   char buffer[MAX_LINE_LENGTH];
 
@@ -78,7 +78,6 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
 
   return dependencies;
 }
-
 
 // Split dataset into Train and Test based on the relevant ratio
 SplitData Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
@@ -140,15 +139,12 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
     return NULL;
   }
 
-  NormVar *norm = (NormVar *)malloc(sizeof(NormVar));
+  NormVar *norm = (NormVar *)calloc(n, sizeof(NormVar));
 
   if (norm == NULL) {
     fprintf(stderr, "Error Normalize().X().Y() returned null\n");
     return NULL;
   }
-
-  norm->X = (float *)malloc(n * sizeof(float));
-  norm->Y = (float *)malloc(n * sizeof(float));
 
   *y_min = FLT_MAX;
   *y_max = -FLT_MAX;
@@ -187,8 +183,8 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
   return norm;
 }
 
-
-// Denormalize is used to convert back to original value, i.e Example 0.80 -> 989.00
+// Denormalize is used to convert back to original value, i.e Example 0.80 ->
+// 989.00
 float *DeNormalize(float Y[], float y_max, float y_min, size_t n) {
   for (size_t i = 0; i < n; i++) {
     Y[i] = Y[i] * (y_max - y_min) + y_min;

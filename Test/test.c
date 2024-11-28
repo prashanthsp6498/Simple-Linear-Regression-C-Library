@@ -1,14 +1,13 @@
 #include "../EDA/DataAnalysis.h"
 #include "../Regression/Linear.h"
 #include <float.h>
-#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 // Enter File Name
-const char *FileName = "ADANIPORTS.csv";
+const char *FileName = "winequality-white.csv";
 
 // This is to Demonstrate how to use the Library.
 int main() {
@@ -17,7 +16,7 @@ int main() {
 
   // Read_Dataset(const char *file_name, const int independent_var,const int*
   // target_var) */
-  getFile *data = Read_Dataset(FileName, 5, 8);
+  getFile *data = Read_Dataset(FileName, 10, 11);
   int datasize = data->num_rows;
 
   float y_min, y_max;
@@ -54,9 +53,9 @@ int main() {
   float *denormVar = DeNormalize(prediction, y_min, y_max, size_x);
 
   for (int i = 0; i < datasize; i++) {
-    printf("Actual element: %.2f\t Normalized element X: %.2f  Y: %.2f\t "
+    printf("Independet Var: %f\t Dependent Var: %f\t Actual element: %.2f\t Normalized element X: %.2f  Y: %.2f\t "
            "Denormalize "
-           "element: %.2f\t Predicted element : %.2f\t Cost_Function: %.2f\n",
+           "element: %.2f\t Predicted element : %.2f\t Cost_Function: %.2f\n", *data->X, *data->Y,
            split_data.Y_Test[i], normalize->X[i], normalize->Y[i], denormVar[i],
            prediction[i], cost[i]);
   }
@@ -65,39 +64,30 @@ int main() {
 
   metricResult rmse = RMSE(split_data.Y_Test, prediction, size_x);
   if (rmse.is_valid) {
-    printf("RMSE: Is_Valid(0: No 1: Yes) ? %d Value: %f", rmse.is_valid,
-           rmse.value);
+    printf("RMSE: Is_Valid(0: No 1: Yes) ? %d Accuracy: %f", rmse.is_valid,
+           rmse.Accuracy);
   } else {
     fprintf(stderr, "Failed to calculate RMSE\n");
     return 0;
   }
 
   metricResult mse = MSE(split_data.Y_Test, prediction, size_x);
-  if (mse.value >= 0) {
+  if (mse.Accuracy >= 0) {
 
-    printf("\tMSE: Is_Valid(0: No 1: Yes) ? %d\t Value: %f\n", mse.is_valid,
-           mse.value);
+    printf("\tMSE: Is_Valid(0: No 1: Yes) ? %d\t Accuracy: %f\n", mse.is_valid,
+           mse.Accuracy);
   } else {
     printf("Failed to calculate MSE\n");
     return 0;
   }
 
-  if (model) {
-    Free_Model(model);
-    model = NULL;
-  }
-  if (data) {
-    free(data);
-    data = NULL;
-  }
-  if (normalize) {
-    free(normalize);
-    normalize = NULL;
-  }
-  if (prediction) {
-    free(prediction);
-    prediction = NULL;
-  }
+  Free_Model(model);
+  free(prediction);
+  prediction = NULL;
+  free(data);
+  data = NULL;
+  free(normalize);
+  normalize = NULL;
 
   return 0;
 }

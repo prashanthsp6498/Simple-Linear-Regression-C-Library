@@ -10,7 +10,7 @@ typedef struct {
 } Beta;
 
 typedef struct {
-  float value;
+  float Accuracy;
   bool is_valid;
 } metricResult;
 

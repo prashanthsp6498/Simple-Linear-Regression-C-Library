@@ -1,5 +1,4 @@
 #include "Linear.h"
-#include "EDA/DataAnalysis.h"
 #include <complex.h>
 #include <math.h>
 #include <stdbool.h>
@@ -162,11 +161,11 @@ metricResult RMSE(float *ActualData, float *PredictedData, size_t n) {
   if (valid_count == 0) {
     fprintf(stderr, "Error: No valid data points for RMSE Calculations\n");
     result.is_valid = false;
-    result.value = NAN;
+    result.Accuracy = NAN;
     return result;
   }
 
-  result.value = sqrt(error_sum / valid_count);
+  result.Accuracy = sqrt(error_sum / valid_count);
   result.is_valid = true;
 
   return result;
@@ -192,11 +191,11 @@ metricResult MSE(float *ActualData, float *PredictedData, size_t n) {
   if (validCount == 0) {
     fprintf(stderr, "Error: No valid Data Points\n");
     result.is_valid = false;
-    result.value = NAN;
+    result.Accuracy = NAN;
     return result;
   }
 
-  result.value = error_sum / validCount;
+  result.Accuracy = error_sum / validCount;
   result.is_valid = true;
 
   return result;
@@ -205,6 +204,8 @@ metricResult MSE(float *ActualData, float *PredictedData, size_t n) {
 void Free_Model(Beta *model) {
   if (model) {
     free(model);
+  }else{
+    fprintf(stderr, "There is no memory blocks allocated for Model.\n");
   }
 }
 
