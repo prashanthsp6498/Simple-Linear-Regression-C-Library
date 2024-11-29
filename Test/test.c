@@ -7,7 +7,7 @@
 #include <string.h>
 
 // Enter File Name
-const char *FileName = "winequality-white.csv";
+const char *FileName = "winequality-red.csv";
 
 // This is to Demonstrate how to use the Library.
 int main() {
@@ -17,12 +17,19 @@ int main() {
   // Read_Dataset(const char *file_name, const int independent_var,const int*
   // target_var) */
   getFile *data = Read_Dataset(FileName, 10, 11);
+
+  if (sizeof(data->X) != sizeof(data->Y)) {
+    fprintf(stderr, "Test() Error: Size of Independent and Dependent variable "
+                    "is not equal\n");
+    return 0;
+  }
   int datasize = data->num_rows;
 
   float y_min, y_max;
-  float x_min, x_max;
+  /*float x_min, x_max;
   x_min = FLT_MAX;
   x_max = -FLT_MAX;
+  */
   NormVar *normalize = Normalize(data->X, data->Y, datasize, &y_min, &y_max);
 
   size_t size_x, size_y;
@@ -34,30 +41,31 @@ int main() {
 
   Beta *model =
       Fit_Model(split_data.X_Train, split_data.Y_Train, size_x, size_y);
-  float lr = 0.05;
+  float lr = 0.5;
   int epochs = 10000;
   printf("%.2f %.2f\n", model->slope, model->intercept);
 
   Stochastic_Gradient_Descent(normalize->X, normalize->Y, model, size_x, epochs,
                               lr);
-  printf("\n\t\tAfter stochastic gradient\t\n Slope: %.2f\t Intercept: %.2f \t\n",
-         model->slope, model->intercept);
+  printf(
+      "\n\t\tAfter stochastic gradient\t\n Slope: %.2f\t Intercept: %.2f \t\n",
+      model->slope, model->intercept);
 
   float *prediction = Predict_Model(split_data.X_Test, datasize, *model);
 
   float *cost = (float *)malloc(sizeof(float));
 
   // convert Normalized X_Test to Denormalized X_Test
-  float *x_Test = DeNormalize(split_data.X_Test, x_min, x_max, size_x);
-  *cost = Cost_Function(x_Test, prediction, size_x, size_y);
+  // float *x_Test = DeNormalize(split_data.X_Test, x_min, x_max, size_x);
+  *cost = Cost_Function(split_data.X_Test, prediction, size_x, size_y);
   float *denormVar = DeNormalize(prediction, y_min, y_max, size_x);
 
   for (int i = 0; i < datasize; i++) {
-    printf("Independet Var: %f\t Dependent Var: %f\t Actual element: %.2f\t "
-           "Normalized element X: %.2f  Y: %.2f\tDenormalize element: %.2f\t "
-           "Predicted element : %.2f\t Cost_Function: %.2f\n",
-           data->X[i], data->Y[i], split_data.Y_Test[i], normalize->X[i],
-           normalize->Y[i], denormVar[i], prediction[i], cost[i]);
+    printf(" Actual element: %.2f\t "
+           "Normalized element X: %.2f  Y: %.2f\tDenormalize element: %f\t "
+           "Predicted element : %f\t Cost_Function: %.2f\n",
+           split_data.Y_Test[i], normalize->X[i], normalize->Y[i], denormVar[i],
+           prediction[i], cost[i]);
   }
 
   // float *deNormalize = DeNormalize(split_data.X_Test, x_min, x_max, size_x);
@@ -82,6 +90,7 @@ int main() {
   }
 
   Free_Model(model);
+  model = NULL;
   free(prediction);
   prediction = NULL;
   free(data);
