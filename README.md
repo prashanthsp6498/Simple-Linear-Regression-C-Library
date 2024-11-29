@@ -11,7 +11,7 @@ Perfect for developers seeking a foundational yet robust tool for regression tas
 ## Project Structre
 
 ## Simple_Linear_Regression_Library
-
+```bash
 .
 |-- build
 | `-- test
@@ -30,6 +30,7 @@ Perfect for developers seeking a foundational yet robust tool for regression tas
 |-- winequality.names
 |-- winequality-red.csv
 `-- winequality-white.csv
+```
 
 ## How to compile ?
 
