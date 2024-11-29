@@ -40,8 +40,8 @@ int main() {
 
   Stochastic_Gradient_Descent(normalize->X, normalize->Y, model, size_x, epochs,
                               lr);
-  printf("After stochastic gradient %.2f %.2f \t\n", model->slope,
-         model->intercept);
+  printf("\n\t\tAfter stochastic gradient\t\n Slope: %.2f\t Intercept: %.2f \t\n",
+         model->slope, model->intercept);
 
   float *prediction = Predict_Model(split_data.X_Test, datasize, *model);
 
@@ -53,11 +53,11 @@ int main() {
   float *denormVar = DeNormalize(prediction, y_min, y_max, size_x);
 
   for (int i = 0; i < datasize; i++) {
-    printf("Independet Var: %f\t Dependent Var: %f\t Actual element: %.2f\t Normalized element X: %.2f  Y: %.2f\t "
-           "Denormalize "
-           "element: %.2f\t Predicted element : %.2f\t Cost_Function: %.2f\n", *data->X, *data->Y,
-           split_data.Y_Test[i], normalize->X[i], normalize->Y[i], denormVar[i],
-           prediction[i], cost[i]);
+    printf("Independet Var: %f\t Dependent Var: %f\t Actual element: %.2f\t "
+           "Normalized element X: %.2f  Y: %.2f\tDenormalize element: %.2f\t "
+           "Predicted element : %.2f\t Cost_Function: %.2f\n",
+           data->X[i], data->Y[i], split_data.Y_Test[i], normalize->X[i],
+           normalize->Y[i], denormVar[i], prediction[i], cost[i]);
   }
 
   // float *deNormalize = DeNormalize(split_data.X_Test, x_min, x_max, size_x);

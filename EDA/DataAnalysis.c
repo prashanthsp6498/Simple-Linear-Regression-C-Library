@@ -13,6 +13,7 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
   FILE *file = fopen(file_name, "r");
   if (!file) {
     fprintf(stderr, "Failed to open file %s\n", file_name);
+    return 0;
   }
 
   if (fseek(file, 0, SEEK_END) != 0) {
@@ -28,6 +29,7 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
   }
 
   printf("Opening the File");
+  printf("The size of the Dataset: %ld\n", get_file_size);
   fseek(file, 0, SEEK_SET);
 
   int maxEnt = get_file_size / (2 * sizeof(getFile));
@@ -37,17 +39,27 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
     fprintf(stderr, "Memory allocation failed\n");
     fclose(file);
     free(dependencies);
+    return NULL;
   }
 
-  dependencies->X = (float *)malloc(sizeof(float));
-  dependencies->Y = (float *)malloc(sizeof(float));
+  dependencies->X = (float *)malloc(maxEnt * sizeof(float));
+  dependencies->Y = (float *)malloc(maxEnt * sizeof(float));
+
+  if (!dependencies->X || !dependencies->Y) {
+    fprintf(stderr, "Read_Dataset() Error: Memory not allocated for "
+                    "Dependencies.X and Dependencies.Y\n");
+    free(dependencies->X);
+    free(dependencies->Y);
+    free(dependencies);
+    return NULL;
+  }
 
   char buffer[MAX_LINE_LENGTH];
 
   int row = 0;
   int column = 0;
 
-  while (fgets(buffer, maxEnt, file) != NULL) {
+  while (fgets(buffer, MAX_LINE_LENGTH, file) != NULL) {
     column = 0;
     row++;
 
@@ -83,6 +95,12 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
 SplitData Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
   SplitData *split_data = (SplitData *)malloc(sizeof(SplitData));
 
+  if (!split_data) {
+    fprintf(stderr, "Split_Dataset() Error: Memory is not allocated\n");
+    free(split_data);
+    exit(1);
+  }
+
   if (X == NULL || Y == NULL) {
     fprintf(stderr, "Error X and Y both are null");
   }
@@ -98,6 +116,11 @@ SplitData Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
   if (!split_data->X_Train || !split_data->Y_Train || !split_data->X_Test ||
       !split_data->Y_Test) {
     fprintf(stderr, "Memory allocation is failed for Split Data\n");
+    free(split_data->X_Train);
+    free(split_data->X_Test);
+    free(split_data->Y_Train);
+    free(split_data->Y_Test);
+    free(split_data);
     exit(1);
   }
 
@@ -119,8 +142,8 @@ SplitData Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
     split_data->Y_Train[i] = Y[indicies[i]];
   }
   for (size_t i = 0; i < split_data->test_size; i++) {
-    *split_data->X_Test = X[indicies[split_data->train_size + 1]];
-    *split_data->Y_Test = Y[indicies[split_data->train_size + 1]];
+    *split_data->X_Test = X[indicies[split_data->train_size + i]];
+    *split_data->Y_Test = Y[indicies[split_data->train_size + i]];
   }
 
   free(indicies);
@@ -139,10 +162,22 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
     return NULL;
   }
 
-  NormVar *norm = (NormVar *)calloc(n, sizeof(NormVar));
+  NormVar *norm = (NormVar *)malloc(sizeof(NormVar));
 
-  if (norm == NULL) {
+  if (!norm) {
     fprintf(stderr, "Error Normalize().X().Y() returned null\n");
+    free(norm);
+    return NULL;
+  }
+
+  norm->X = (float *)malloc(n * sizeof(float));
+  norm->Y = (float *)malloc(n * sizeof(float));
+
+  if (!norm->X || !norm->Y) {
+    fprintf(stderr, "Memory Allocation failed for X and Y\n");
+    free(norm->X);
+    free(norm->Y);
+    free(norm);
     return NULL;
   }
 

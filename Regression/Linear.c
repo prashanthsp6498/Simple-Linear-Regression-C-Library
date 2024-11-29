@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 Beta *Initialize_Model() {
@@ -12,11 +13,17 @@ Beta *Initialize_Model() {
   if (!model) {
     fprintf(stderr, " Memory allocation failed. Please check the "
                     "'Initialize_Model()' func\n");
+    free(model);
     return NULL;
   }
 
   model->slope = ((float)rand() / RAND_MAX) * 0.01;
   model->intercept = ((float)rand() / RAND_MAX) * 0.01;
+  if (!model->slope || !model->intercept) {
+    fprintf(stderr, "Initialization_Model(): Memory is not allocated for Slope "
+                    "and Intercept\n");
+    return NULL;
+  }
 
   return model;
 }
@@ -84,6 +91,7 @@ float *Predict_Model(float X[], size_t size, Beta model) {
 
 void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                                  int epochs, float lr) {
+  // suppose assume epochs is 10,000 then iterates over 10000 times..
   for (int epoch = 0; epoch < epochs; epoch++) {
     for (size_t i = 0; i < n; i++) {
       size_t rand_index = rand() % n;
@@ -155,7 +163,7 @@ metricResult RMSE(float *ActualData, float *PredictedData, size_t n) {
     }
     float error = PredictedData[i] - ActualData[i];
     error_sum += error * error;
-    valid_count = valid_count+1;
+    valid_count = valid_count + 1;
   }
 
   if (valid_count == 0) {
@@ -204,8 +212,8 @@ metricResult MSE(float *ActualData, float *PredictedData, size_t n) {
 void Free_Model(Beta *model) {
   if (model) {
     free(model);
-  }else{
+    model = NULL;
+  } else {
     fprintf(stderr, "There is no memory blocks allocated for Model.\n");
   }
 }
-
