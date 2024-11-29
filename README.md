@@ -11,20 +11,18 @@ Perfect for developers seeking a foundational yet robust tool for regression tas
 ## Project Structre
 
 ## Simple_Linear_Regression_Library
------------------------------------
+
+.
 |-- build
 | `-- test
 |-- EDA
 |   |-- DataAnalysis.c
 |   |-- DataAnalysis.h
-|   `-- DataAnalysis.o
 |-- Regression
 | |-- Linear.c
 | |-- Linear.h
-| |-- Linear.o
 |-- Test
-|   |-- test.c
-|   `-- test.o
+| |-- test.c
 |-- compile_commands.json
 |-- License
 |-- makefile
