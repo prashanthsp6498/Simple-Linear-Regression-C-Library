@@ -13,7 +13,6 @@ Beta *Initialize_Model() {
   if (!model) {
     fprintf(stderr, " Memory allocation failed. Please check the "
                     "'Initialize_Model()' func\n");
-    free(model);
     return NULL;
   }
 
@@ -26,6 +25,11 @@ Beta *Initialize_Model() {
 Beta *Fit_Model(float X[], float y[], size_t n, size_t m) {
 
   Beta *model = Initialize_Model();
+  if (X == NULL || y == NULL) {
+    fprintf(stderr, "Linear().Fit_Model Error: Input arrays cannot be NULL.\n");
+    Free_Model(model);
+    return NULL;
+  }
   float sumXY = 0.0;
   float sumX = 0.0;
   float sumY = 0.0;
@@ -207,8 +211,33 @@ metricResult MSE(float *ActualData, float *PredictedData, size_t n) {
 void Free_Model(Beta *model) {
   if (model) {
     free(model);
-    model = NULL;
   } else {
     fprintf(stderr, "There is no memory blocks allocated for Model.\n");
+  }
+}
+
+void Free_Data(getFile *data) {
+  if (data) {
+    free(data->X);
+    free(data->Y);
+    free(data);
+  }
+}
+
+void Free_Normalize(NormVar *normalize) {
+  if (normalize) {
+    free(normalize->X);
+    free(normalize->Y);
+    free(normalize);
+  }
+}
+
+void Free_Split(SplitData *split) {
+  if (split) {
+    free(split->X_Train);
+    free(split->Y_Train);
+    free(split->X_Test);
+    free(split->Y_Test);
+    split = NULL;
   }
 }

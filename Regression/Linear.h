@@ -24,6 +24,8 @@ metricResult RMSE(float *, float *, size_t);
 metricResult MSE(float *, float *, size_t);
 void Stochastic_Gradient_Descent(float[], float[], Beta *, size_t, int, float);
 void Free_Model(Beta *);
-void Free_Split_Data(SplitData *);
+void Free_Data(getFile *);
+void Free_Normalize(NormVar *);
+void Free_Split(SplitData *);
 
 #endif

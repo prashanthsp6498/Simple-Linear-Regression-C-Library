@@ -1,5 +1,7 @@
 #include "DataAnalysis.h"
+#include "../Regression/Linear.h"
 #include <float.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -97,7 +99,6 @@ SplitData Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
 
   if (!split_data) {
     fprintf(stderr, "Split_Dataset() Error: Memory is not allocated\n");
-    free(split_data);
     exit(1);
   }
 
@@ -116,11 +117,7 @@ SplitData Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
   if (!split_data->X_Train || !split_data->Y_Train || !split_data->X_Test ||
       !split_data->Y_Test) {
     fprintf(stderr, "Memory allocation is failed for Split Data\n");
-    free(split_data->X_Train);
-    free(split_data->X_Test);
-    free(split_data->Y_Train);
-    free(split_data->Y_Test);
-    free(split_data);
+    Free_Split(split_data);
     exit(1);
   }
 
@@ -220,9 +217,11 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
 
 // Denormalize is used to convert back to original value, i.e Example 0.80 ->
 // 989.00
-float *Denormalize(float Y[], float y_max, float y_min, size_t n) {
+float *Denormalize(float normalize_Value[], float y_max, float y_min,
+                   size_t n) {
+  float *original_value = (float *)malloc(n * sizeof(float));
   for (size_t i = 0; i < n; i++) {
-    Y[i] = Y[i] * (y_max - y_min) + y_min;
+    original_value[i] = (normalize_Value[i] * (y_max - y_min)) + y_min;
   }
-  return Y;
+  return original_value;
 }

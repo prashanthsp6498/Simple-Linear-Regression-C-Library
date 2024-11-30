@@ -9,23 +9,15 @@
 // Enter File Name
 const char *FileName = "Datasets/winequality-white.csv";
 
-// This is to Demonstrate how to use the Library.
 int main() {
   // Read file from the Dataset
-  printf("Now Opening the file func\n");
+  printf("Hi, Welcome to LinRegC Library: A simple and efficient tool for "
+         "simple linear regression\n");
 
   // Read_Dataset(const char *file_name, const int independent_var,const int*
   // target_var) */
   getFile *data = Read_Dataset(FileName, 10, 11);
 
-  if (sizeof(data->X) != sizeof(data->Y)) {
-    fprintf(stderr, "Test() Error: Size of Independent and Dependent variable "
-                    "is not equal\n");
-    // If failed to allocate memory, then free the *data
-    free(data->X);
-    free(data->Y);
-    return 0;
-  }
   int datasize = data->num_rows;
 
   float y_min, y_max;
@@ -36,14 +28,15 @@ int main() {
   size_x = size_y = datasize;
 
   float train_ratio = 0.8;
+  // Facing problem  in split_data
   SplitData split_data =
       Split_Dataset(normalize->X, normalize->Y, size_x, train_ratio);
 
   Beta *model =
       Fit_Model(split_data.X_Train, split_data.Y_Train, size_x, size_y);
-  float lr = 0.5;
+  float lr = 0.05;
   int epochs = 10000;
-  printf("%.2f %.2f\n", model->slope, model->intercept);
+  printf("Slope: %.2f\t Intercept: %.2f\n", model->slope, model->intercept);
 
   Stochastic_Gradient_Descent(normalize->X, normalize->Y, model, size_x, epochs,
                               lr);
@@ -54,19 +47,33 @@ int main() {
   float *prediction = Predict_Model(split_data.X_Test, datasize, *model);
 
   float *cost = (float *)malloc(sizeof(float));
+  if (!cost) {
+    fprintf(stderr, "Test().*Cost Error: Memory Allocation Error\n");
+    free(cost);
+  }
 
   // convert Normalized X_Test to Denormalized X_Test
   // float *x_Test = DeNormalize(split_data.X_Test, x_min, x_max, size_x);
-  *cost = Cost_Function(split_data.X_Test, prediction, size_x, size_y);
-  float *denormVar = Denormalize(prediction, y_min, y_max, size_x);
+  // Fixed Bug in Cost_Function
+  *cost = Cost_Function(split_data.Y_Test, prediction, size_x, size_y);
+  float *prediction_denorm_var = Denormalize(prediction, y_min, y_max, size_x);
+  if (!prediction_denorm_var) {
+    fprintf(stderr, "Test().denormVar Error: Memory allocation failed\n");
+    free(prediction_denorm_var);
+  }
+  float *Y_test = Denormalize(split_data.Y_Test, y_min, y_max, size_y);
+  if (!Y_test) {
+    fprintf(stderr, "Test().Y_Test Error: Memory allocation failed\n");
+    free(Y_test);
+  }
 
   for (int i = 0; i < datasize; i++) {
-    printf("Independent Var: %.2f\t Dependent var: %.2f\t | Actual element: "
+    printf("Independent Var: %.2f\t Dependent var: %.2f == Actual element: "
            "%.2f |\t "
            "Normalized element X: %.2f  Y: %.2f Denormalize element: %f\t "
            "| Predicted element : %.2f |\t Cost_Function: %.2f\n",
-           data->X[i], data->Y[i], split_data.Y_Test[i], normalize->X[i],
-           normalize->Y[i], denormVar[i], prediction[i], cost[i]);
+           data->X[i], data->Y[i], Y_test[i], normalize->X[i], normalize->Y[i],
+           prediction_denorm_var[i], prediction[i], cost[i]);
   }
 
   // float *deNormalize = DeNormalize(split_data.X_Test, x_min, x_max, size_x);
@@ -90,13 +97,15 @@ int main() {
     return 0;
   }
 
+  // Free the memory allocations
   Free_Model(model);
+  Free_Data(data);
+  Free_Normalize(normalize);
+  Free_Split(&split_data);
   free(prediction);
-  prediction = NULL;
-  free(data);
-  data = NULL;
-  free(normalize);
-  normalize = NULL;
+  free(prediction_denorm_var);
+  free(Y_test);
+  free(cost);
 
   return 0;
 }
