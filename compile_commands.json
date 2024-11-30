@@ -2,6 +2,7 @@
   {
     "arguments": [
       "/usr/bin/gcc",
+      "-g",
       "-Wall",
       "-Wextra",
       "-Werror",
@@ -12,13 +13,14 @@
       "Test/test.o",
       "Test/test.c"
     ],
-    "directory": "/home/hexa/C_Project",
-    "file": "/home/hexa/C_Project/Test/test.c",
-    "output": "/home/hexa/C_Project/Test/test.o"
+    "directory": "/home/hexa/LinRegC",
+    "file": "/home/hexa/LinRegC/Test/test.c",
+    "output": "/home/hexa/LinRegC/Test/test.o"
   },
   {
     "arguments": [
       "/usr/bin/gcc",
+      "-g",
       "-Wall",
       "-Wextra",
       "-Werror",
@@ -29,13 +31,14 @@
       "Regression/Linear.o",
       "Regression/Linear.c"
     ],
-    "directory": "/home/hexa/C_Project",
-    "file": "/home/hexa/C_Project/Regression/Linear.c",
-    "output": "/home/hexa/C_Project/Regression/Linear.o"
+    "directory": "/home/hexa/LinRegC",
+    "file": "/home/hexa/LinRegC/Regression/Linear.c",
+    "output": "/home/hexa/LinRegC/Regression/Linear.o"
   },
   {
     "arguments": [
       "/usr/bin/gcc",
+      "-g",
       "-Wall",
       "-Wextra",
       "-Werror",
@@ -46,8 +49,8 @@
       "EDA/DataAnalysis.o",
       "EDA/DataAnalysis.c"
     ],
-    "directory": "/home/hexa/C_Project",
-    "file": "/home/hexa/C_Project/EDA/DataAnalysis.c",
-    "output": "/home/hexa/C_Project/EDA/DataAnalysis.o"
+    "directory": "/home/hexa/LinRegC",
+    "file": "/home/hexa/LinRegC/EDA/DataAnalysis.c",
+    "output": "/home/hexa/LinRegC/EDA/DataAnalysis.o"
   }
 ]
