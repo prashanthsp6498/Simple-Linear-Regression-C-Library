@@ -220,7 +220,7 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
 
 // Denormalize is used to convert back to original value, i.e Example 0.80 ->
 // 989.00
-float *DeNormalize(float Y[], float y_max, float y_min, size_t n) {
+float *Denormalize(float Y[], float y_max, float y_min, size_t n) {
   for (size_t i = 0; i < n; i++) {
     Y[i] = Y[i] * (y_max - y_min) + y_min;
   }

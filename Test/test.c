@@ -7,11 +7,11 @@
 #include <string.h>
 
 // Enter File Name
-const char *FileName = "winequality-red.csv";
+const char *FileName = "Datasets/winequality-white.csv";
 
 // This is to Demonstrate how to use the Library.
 int main() {
-  // Read file
+  // Read file from the Dataset
   printf("Now Opening the file func\n");
 
   // Read_Dataset(const char *file_name, const int independent_var,const int*
@@ -21,15 +21,15 @@ int main() {
   if (sizeof(data->X) != sizeof(data->Y)) {
     fprintf(stderr, "Test() Error: Size of Independent and Dependent variable "
                     "is not equal\n");
+    // If failed to allocate memory, then free the *data
+    free(data->X);
+    free(data->Y);
     return 0;
   }
   int datasize = data->num_rows;
 
   float y_min, y_max;
-  /*float x_min, x_max;
-  x_min = FLT_MAX;
-  x_max = -FLT_MAX;
-  */
+  // Pass the data points to Normalization function.
   NormVar *normalize = Normalize(data->X, data->Y, datasize, &y_min, &y_max);
 
   size_t size_x, size_y;
@@ -58,14 +58,15 @@ int main() {
   // convert Normalized X_Test to Denormalized X_Test
   // float *x_Test = DeNormalize(split_data.X_Test, x_min, x_max, size_x);
   *cost = Cost_Function(split_data.X_Test, prediction, size_x, size_y);
-  float *denormVar = DeNormalize(prediction, y_min, y_max, size_x);
+  float *denormVar = Denormalize(prediction, y_min, y_max, size_x);
 
   for (int i = 0; i < datasize; i++) {
-    printf(" Actual element: %.2f\t "
-           "Normalized element X: %.2f  Y: %.2f\tDenormalize element: %f\t "
-           "Predicted element : %f\t Cost_Function: %.2f\n",
-           split_data.Y_Test[i], normalize->X[i], normalize->Y[i], denormVar[i],
-           prediction[i], cost[i]);
+    printf("Independent Var: %.2f\t Dependent var: %.2f\t | Actual element: "
+           "%.2f |\t "
+           "Normalized element X: %.2f  Y: %.2f Denormalize element: %f\t "
+           "| Predicted element : %.2f |\t Cost_Function: %.2f\n",
+           data->X[i], data->Y[i], split_data.Y_Test[i], normalize->X[i],
+           normalize->Y[i], denormVar[i], prediction[i], cost[i]);
   }
 
   // float *deNormalize = DeNormalize(split_data.X_Test, x_min, x_max, size_x);
@@ -90,7 +91,6 @@ int main() {
   }
 
   Free_Model(model);
-  model = NULL;
   free(prediction);
   prediction = NULL;
   free(data);

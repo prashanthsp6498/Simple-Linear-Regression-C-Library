@@ -19,11 +19,6 @@ Beta *Initialize_Model() {
 
   model->slope = ((float)rand() / RAND_MAX) * 0.01;
   model->intercept = ((float)rand() / RAND_MAX) * 0.01;
-  if (!model->slope || !model->intercept) {
-    fprintf(stderr, "Initialization_Model(): Memory is not allocated for Slope "
-                    "and Intercept\n");
-    return NULL;
-  }
 
   return model;
 }

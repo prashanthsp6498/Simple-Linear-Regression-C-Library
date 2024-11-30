@@ -28,7 +28,7 @@ getFile *Read_Dataset(const char *file_name, const int Data_feature,
 
 NormVar *Normalize(float[], float[], size_t, float *, float *);
 
-float *DeNormalize(float[], float, float, size_t);
+float *Denormalize(float[], float, float, size_t);
 
 SplitData Split_Dataset(float[], float[], size_t, float);
 
