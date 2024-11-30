@@ -11,8 +11,9 @@ Perfect for developers seeking a foundational yet robust tool for regression tas
 ## Project Structre
 
 ## Simple_Linear_Regression_Library
+
 ```bash
-.
+Project Root Directory
 |-- build
 | `-- test
 |-- EDA
