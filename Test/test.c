@@ -36,7 +36,9 @@ int main() {
 
         Beta *model =
             Fit_Model(split_data->X_Train, split_data->Y_Train, size_x, size_y);
-        float lr = 0.05;
+
+        // Learning rate
+        float lr = 0.01;
         int epochs = 10000;
         printf("Slope: %.2f\t Intercept: %.2f\n", model->slope,
                model->intercept);
