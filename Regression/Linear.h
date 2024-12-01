@@ -6,13 +6,13 @@
 
 /* Declare your Struct section here.. */
 typedef struct {
-  float slope;
-  float intercept;
+        float slope;
+        float intercept;
 } Beta;
 
 typedef struct {
-  float Accuracy;
-  bool is_valid;
+        float Accuracy;
+        bool is_valid;
 } metricResult;
 
 // Here Declare you function with arguments

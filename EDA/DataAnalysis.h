@@ -4,23 +4,23 @@
 #define MAX_SIZE 1024
 
 typedef struct {
-  float *X;
-  float *Y;
-  size_t num_rows;
+        float *X;
+        float *Y;
+        size_t num_rows;
 } getFile;
 
 typedef struct {
-  float *X_Train;
-  float *Y_Train;
-  float *X_Test;
-  float *Y_Test;
-  size_t train_size;
-  size_t test_size;
+        float *X_Train;
+        float *Y_Train;
+        float *X_Test;
+        float *Y_Test;
+        size_t train_size;
+        size_t test_size;
 } SplitData;
 
 typedef struct {
-  float *X;
-  float *Y;
+        float *X;
+        float *Y;
 } NormVar;
 
 getFile *Read_Dataset(const char *file_name, const int Data_feature,
