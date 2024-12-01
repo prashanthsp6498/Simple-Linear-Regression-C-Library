@@ -52,3 +52,18 @@ Then run the binary file.
 ```bash
 ./build/test
 ```
+
+## How to Debug or trace Memory allocation Error ?
+
+Use GDB for Debuging and Valgrind for Memory issues.
+
+```bash
+gdb ./build/test
+```
+
+Refer official documentation of GDB for more info.
+And for Valgrind
+
+```bash
+valgrind --leak-check=full --track-origins=yes -s ./build/test
+```
