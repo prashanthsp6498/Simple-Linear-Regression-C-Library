@@ -126,23 +126,26 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
         }
 }
 
-float Cost_Function(float actualValue[], float *predictedValue, size_t sizeX,
+float Cost_Function(float *actualValue, float *predictedValue, size_t sizeX,
                     size_t sizeY) {
         float costFunction = 0.0;
 
         if (sizeX != sizeY) {
                 fprintf(stderr, "Length of Dependent and Independent variable "
                                 "are not same ");
+                return  -1;
         }
 
         for (size_t i = 0; i < sizeX; i++) {
-                if (actualValue[i] != 0 && predictedValue[i] != 0) {
-                        float error = predictedValue[i] - actualValue[i];
-                        costFunction += error * error;
+                if (!actualValue || !predictedValue) {
+                        fprintf(stderr, "Linear().Cost_Function() Error: "
+                                        "'Memroy Allocation Error'\n");
+                        return -1;
                 }
+                costFunction += pow((actualValue[i] - predictedValue[i]), 2);
         }
 
-        costFunction /= (2 * sizeX);
+        costFunction /= sizeX;
 
         return costFunction;
 }
@@ -168,7 +171,7 @@ metricResult RMSE(float *ActualData, float *PredictedData, size_t n) {
                 }
                 float error = PredictedData[i] - ActualData[i];
                 error_sum += error * error;
-                valid_count = valid_count + 1;
+                valid_count++;
         }
 
         if (valid_count == 0) {

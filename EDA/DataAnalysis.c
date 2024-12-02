@@ -233,7 +233,7 @@ float *Denormalize(float normalize_Value[], float y_max, float y_min,
         float *original_value = (float *)malloc(n * sizeof(float));
         for (size_t i = 0; i < n; i++) {
                 original_value[i] =
-                    (normalize_Value[i] * (y_max - y_min)) + y_min;
+                    normalize_Value[i] * (y_max - y_min) + y_min;
         }
         return original_value;
 }

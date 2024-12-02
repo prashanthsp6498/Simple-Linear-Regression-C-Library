@@ -55,7 +55,6 @@ int main() {
         if (!cost) {
                 fprintf(stderr,
                         "Test().*Cost Error: Memory Allocation Error\n");
-                free(cost);
         }
 
         // convert Normalized X_Test to Denormalized X_Test
@@ -66,7 +65,7 @@ int main() {
         if (!prediction_denorm_var) {
                 fprintf(stderr,
                         "Test().denormVar Error: Memory allocation failed\n");
-                free(prediction_denorm_var);
+                return EXIT_FAILURE;
         }
         float *Y_test = Denormalize(split_data->Y_Test, y_min, y_max, size_y);
         if (!Y_test) {
@@ -84,7 +83,7 @@ int main() {
                        "| Predicted element : %.2f |\t Cost_Function: %.2f\n",
                        data->X[i], data->Y[i], Y_test[i], normalize->X[i],
                        normalize->Y[i], prediction_denorm_var[i], prediction[i],
-                       *cost);
+                       cost[i]);
         }
 
         metricResult rmse = RMSE(split_data->Y_Test, prediction, size_x);
