@@ -5,7 +5,8 @@
 #include <stddef.h>
 #include <stdio.h>
 
-metricResult MSE(float *actualValue, float *predictValue, size_t x) {
+metricResult Mean_Squared_Error(float *actualValue, float *predictValue,
+                                size_t x) {
         metricResult result = {0.0, false};
         float sum = 0.0;
         int validCount = 0;
@@ -101,18 +102,22 @@ metricResult Root_Mean_Squared_Error(float *actualValue, float *predictValue,
 }
 
 // Regularization Methods: L1 and L2;
-float Lasso_Regularization(float *weights, size_t num_weights, float lambda) {
-        float lasso_penalty = 0.0;
-        for (size_t i = 0; i < num_weights; i++) {
-                lasso_penalty += fabs(weights[i]);
+float Lasso_Regularization(Beta *model, float lambda) {
+        if (!model) {
+                fprintf(stderr, "Lasso Regularization Error: Model is Null.\n");
+                return 0.0;
         }
+        float lasso_penalty = fabs(model->slope) + fabs(model->intercept);
         return lambda * lasso_penalty;
 }
 
-float Ridge_Regularization(float *weights, size_t num_weights, float lambda) {
-        float ridge_penalty = 0.0;
-        for (size_t i = 0; i < num_weights; i++) {
-                ridge_penalty += weights[i] * weights[i];
+float Ridge_Regularization(Beta *model, float lambda) {
+        if (!model) {
+                fprintf(stderr, "Ridge Regularization Error: Model is Null.\n");
+                return 0.0;
         }
+
+        float ridge_penalty = (model->slope * model->slope) +
+                              (model->intercept * model->intercept);
         return lambda * ridge_penalty;
 }

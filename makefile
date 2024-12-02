@@ -4,7 +4,7 @@ CFLAGS = -g -Wall -Wextra -Werror -I. -IRegression
 LDFLAGS = -lm
 
 # Source files
-SRCS = Test/test.c Regression/Linear.c EDA/DataAnalysis.c
+SRCS = Test/test.c Regression/Linear.c EDA/DataAnalysis.c Regression/model_performance_with_regularization.c
 OBJS = $(SRCS:.c=.o)
 
 # Targets

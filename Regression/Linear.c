@@ -1,4 +1,5 @@
 #include "Linear.h"
+#include "model_performance_with_regularization.h"
 #include <complex.h>
 #include <math.h>
 #include <stdbool.h>
@@ -117,105 +118,16 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
 
                         model->slope += lr * error * X[i];
                         model->intercept += lr * error;
+                        float regularization_term =
+                            Lasso_Regularization(model, 0.1);
                         /*
                         printf("Epoch: %d Data point: %zu, Error: %.4f, Updated
                         Slope: %.4f, " "Updated Intercept: %.4f\n", epoch, i,
                         error, model->slope, model->intercept);
                         */
+                        printf("Regularizatoin: %.2f\n", regularization_term);
                 }
         }
-}
-
-float Cost_Function(float *actualValue, float *predictedValue, size_t sizeX,
-                    size_t sizeY) {
-        float costFunction = 0.0;
-
-        if (sizeX != sizeY) {
-                fprintf(stderr, "Length of Dependent and Independent variable "
-                                "are not same ");
-                return  -1;
-        }
-
-        for (size_t i = 0; i < sizeX; i++) {
-                if (!actualValue || !predictedValue) {
-                        fprintf(stderr, "Linear().Cost_Function() Error: "
-                                        "'Memroy Allocation Error'\n");
-                        return -1;
-                }
-                costFunction += pow((actualValue[i] - predictedValue[i]), 2);
-        }
-
-        costFunction /= sizeX;
-
-        return costFunction;
-}
-
-metricResult RMSE(float *ActualData, float *PredictedData, size_t n) {
-        // Formula: sqrt((PredictedData - ActualData)^2)/n
-        metricResult result = {0.0, false};
-
-        if (n == 0) {
-                fprintf(
-                    stderr,
-                    "Error: Number of data points must be greater than zero\n");
-                return result;
-        }
-
-        float error_sum = 0.0;
-        size_t valid_count = 0;
-        for (size_t i = 0; i < n; i++) {
-                if (isnan(PredictedData[i]) || isnan(ActualData[i]) ||
-                    isinf(ActualData[i]) || isinf(PredictedData[i])) {
-                        fprintf(stderr, "Skipping Invalid data point\n");
-                        continue;
-                }
-                float error = PredictedData[i] - ActualData[i];
-                error_sum += error * error;
-                valid_count++;
-        }
-
-        if (valid_count == 0) {
-                fprintf(stderr,
-                        "Error: No valid data points for RMSE Calculations\n");
-                result.is_valid = false;
-                result.Accuracy = NAN;
-                return result;
-        }
-
-        result.Accuracy = sqrt(error_sum / valid_count);
-        result.is_valid = true;
-
-        return result;
-}
-
-metricResult MSE(float *ActualData, float *PredictedData, size_t n) {
-        metricResult result = {0.0, false};
-
-        float error_sum = 0.0;
-        size_t validCount = 0;
-        for (size_t i = 0; i < n; i++) {
-                if (isnan(ActualData[i]) || isnan(PredictedData[i]) ||
-                    isinf(PredictedData[i]) || isinf(ActualData[i])) {
-                        fprintf(stderr, "Invalid Data at index: %zu\n", i);
-                        continue;
-                }
-
-                float error = ActualData[i] - PredictedData[i];
-                error_sum += error * error;
-                validCount++;
-        }
-
-        if (validCount == 0) {
-                fprintf(stderr, "Error: No valid Data Points\n");
-                result.is_valid = false;
-                result.Accuracy = NAN;
-                return result;
-        }
-
-        result.Accuracy = error_sum / validCount;
-        result.is_valid = true;
-
-        return result;
 }
 
 void Free_Model(Beta *model) {
