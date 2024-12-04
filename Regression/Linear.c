@@ -125,7 +125,6 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                         Slope: %.4f, " "Updated Intercept: %.4f\n", epoch, i,
                         error, model->slope, model->intercept);
                         */
-                        printf("Regularizatoin: %.2f\n", regularization_term);
                 }
         }
 }
