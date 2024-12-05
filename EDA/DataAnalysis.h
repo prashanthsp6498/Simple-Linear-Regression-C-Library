@@ -30,6 +30,6 @@ NormVar *Normalize(float[], float[], size_t, float *, float *);
 
 float *Denormalize(float[], float, float, size_t);
 
-SplitData Split_Dataset(float[], float[], size_t, float);
+SplitData *Split_Dataset(float[], float[], size_t, float);
 
 #endif

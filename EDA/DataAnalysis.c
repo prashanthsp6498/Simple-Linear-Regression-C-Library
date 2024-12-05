@@ -97,7 +97,7 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
 }
 
 // Split dataset into Train and Test based on the relevant ratio
-SplitData Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
+SplitData *Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
         SplitData *split_data = (SplitData *)malloc(sizeof(SplitData));
 
         if (!split_data) {
@@ -152,7 +152,7 @@ SplitData Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
         }
 
         free(indicies);
-        return *split_data;
+        return split_data;
 }
 
 // Normalize the data-point into 0-1 for efficient result
