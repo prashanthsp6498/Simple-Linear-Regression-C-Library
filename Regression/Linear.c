@@ -91,7 +91,7 @@ float *Predict_Model(float X[], size_t size, Beta model) {
 }
 
 void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
-                                 int epochs, float lr) {
+                                 int epochs, float lr, float lambda) {
         // suppose assume epochs is 10,000 then iterates over 10000 times..
         for (int epoch = 0; epoch < epochs; epoch++) {
                 for (size_t i = 0; i < n; i++) {
@@ -115,11 +115,19 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                                        model->intercept);
                                 return;
                         }
+                        float slope_gradient = -error * X[i];
+                        float intercept_gradient = -error;
 
-                        model->slope += lr * error * X[i];
-                        model->intercept += lr * error;
-                        float regularization_term =
-                            Lasso_Regularization(model, 0.1);
+                        float lasso_penality =
+                            Lasso_Regularization(model, lambda);
+                        /*
+
+                        model->slope += lr * (error * X[i] - lasso_penality);
+                        model->intercept += lr * (error - lasso_penality);
+                        */
+
+                        model->slope -= lr * (slope_gradient + lasso_penality);
+                        model->intercept -= lr * intercept_gradient;
                         /*
                         printf("Epoch: %d Data point: %zu, Error: %.4f, Updated
                         Slope: %.4f, " "Updated Intercept: %.4f\n", epoch, i,

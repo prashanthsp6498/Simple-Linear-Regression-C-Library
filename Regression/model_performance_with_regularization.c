@@ -103,12 +103,14 @@ metricResult Root_Mean_Squared_Error(float *actualValue, float *predictValue,
 
 // Regularization Methods: L1 and L2;
 float Lasso_Regularization(Beta *model, float lambda) {
+        /*
         if (!model) {
                 fprintf(stderr, "Lasso Regularization Error: Model is Null.\n");
                 return 0.0;
         }
         float lasso_penalty = fabs(model->slope) + fabs(model->intercept);
-        return lambda * lasso_penalty;
+        */
+        return lambda * (model->slope >= 0 ? 1 : -1);
 }
 
 float Ridge_Regularization(Beta *model, float lambda) {

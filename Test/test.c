@@ -1,5 +1,6 @@
 #include "../EDA/DataAnalysis.h"
 #include "../Regression/Linear.h"
+#include "../Regression/model_performance_with_regularization.h"
 #include <float.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -43,23 +44,17 @@ int main() {
         printf("Slope: %.2f\t Intercept: %.2f\n", model->slope,
                model->intercept);
 
+        float lambda = 0.1;
         Stochastic_Gradient_Descent(normalize->X, normalize->Y, model, size_x,
-                                    epochs, lr);
+                                    epochs, lr, lambda);
         printf("\n\t\tAfter stochastic gradient\t\n Slope: %.2f\t Intercept: "
                "%.2f \t\n",
                model->slope, model->intercept);
 
         float *prediction = Predict_Model(split_data->X_Test, datasize, *model);
 
-        float *cost = (float *)malloc(sizeof(float));
-        if (!cost) {
-                fprintf(stderr,
-                        "Test().*Cost Error: Memory Allocation Error\n");
-        }
-
         // convert Normalized X_Test to Denormalized X_Test
         // Fixed Bug in Cost_Function
-        *cost = Cost_Function(split_data->Y_Test, prediction, size_x, size_y);
         float *prediction_denorm_var =
             Denormalize(prediction, y_min, y_max, size_x);
         if (!prediction_denorm_var) {
@@ -80,30 +75,29 @@ int main() {
                        "%.2f |\t "
                        "Normalized element X: %.2f  Y: %.2f Denormalize "
                        "element: %f\t "
-                       "| Predicted element : %.2f |\t Cost_Function: %.2f\n",
+                       "| Predicted element : %.2f |\n",
                        data->X[i], data->Y[i], Y_test[i], normalize->X[i],
-                       normalize->Y[i], prediction_denorm_var[i], prediction[i],
-                       cost[i]);
+                       normalize->Y[i], prediction_denorm_var[i],
+                       prediction[i]);
         }
 
-        metricResult rmse = RMSE(split_data->Y_Test, prediction, size_x);
-        if (rmse.is_valid) {
-                printf("RMSE: Is_Valid(0: No 1: Yes) ? %d Accuracy: %f",
-                       rmse.is_valid, rmse.Accuracy);
-        } else {
-                fprintf(stderr, "Failed to calculate RMSE\n");
-                return 0;
+        metricResult rmse =
+            Root_Mean_Squared_Error(split_data->Y_Test, prediction, size_y);
+
+        metricResult mse =
+            Mean_Absolute_Error(split_data->Y_Test, prediction, size_y);
+
+        metricResult mae =
+            Mean_Squared_Error(split_data->Y_Test, prediction, size_y);
+
+        if (!rmse.is_valid || !mse.is_valid || !mae.is_valid) {
+                fprintf(stderr, "Error in Accuracy score\n");
+
+                return -1;
         }
 
-        metricResult mse = MSE(split_data->Y_Test, prediction, size_x);
-        if (mse.Accuracy >= 0) {
-
-                printf("\tMSE: Is_Valid(0: No 1: Yes) ? %d\t Accuracy: %f\n",
-                       mse.is_valid, mse.Accuracy);
-        } else {
-                printf("Failed to calculate MSE\n");
-                return 0;
-        }
+        printf("RMSE: %.2f\t MSE: %.2f\t MAE: %.2f\n", rmse.accuracy,
+               mse.accuracy, mae.accuracy);
 
         // Free the memory allocations
         Free_Model(model);
@@ -113,7 +107,6 @@ int main() {
         free(prediction);
         free(prediction_denorm_var);
         free(Y_test);
-        free(cost);
 
         return 0;
 }
