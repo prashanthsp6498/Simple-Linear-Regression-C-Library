@@ -70,17 +70,13 @@ int main() {
         }
 
         for (int i = 0; i < datasize; i++) {
-                printf("Independent Var: %.2f\t Dependent var: %.2f == Actual "
-                       "element: "
-                       "%.2f |\t "
-                       "Normalized element X: %.2f  Y: %.2f Denormalize "
-                       "element: %f\t "
-                       "| Predicted element : %.2f |\n",
-                       data->X[i], data->Y[i], Y_test[i], normalize->X[i],
-                       normalize->Y[i], prediction_denorm_var[i],
-                       prediction[i]);
+                printf("Independent Variable: %.2f\t Dependent Variable: "
+                       "%.2f\t Original Value: %.2f\t Predicted Value: %.2f\n",
+                       data->X[i], data->Y[i], Y_test[i],
+                       prediction_denorm_var[i]);
         }
 
+        // Accuracy Section
         metricResult rmse =
             Root_Mean_Squared_Error(split_data->Y_Test, prediction, size_y);
 
