@@ -1,4 +1,5 @@
 #include "EDA/DataAnalysis.h"
+#include <stddef.h>
 #ifndef Linear
 #define Linear()
 #include <stdbool.h>
@@ -18,6 +19,6 @@ void Stochastic_Gradient_Descent(float[], float[], Beta *, size_t, int, float, f
 void Free_Model(Beta *);
 void Free_Data(getFile *);
 void Free_Normalize(NormVar *);
-void Free_Split(SplitData *);
+void Free_Split(SplitData * );
 
 #endif

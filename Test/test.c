@@ -31,8 +31,7 @@ int main() {
 
         float train_ratio = 0.8;
         // Facing problem  in split_data
-        SplitData *split_data = (SplitData *)malloc(sizeof(SplitData));
-        split_data =
+        SplitData *split_data =
             Split_Dataset(normalize->X, normalize->Y, size_x, train_ratio);
 
         Beta *model =

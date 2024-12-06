@@ -3,6 +3,7 @@
 #include <complex.h>
 #include <math.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -163,12 +164,9 @@ void Free_Normalize(NormVar *normalize) {
 }
 
 void Free_Split(SplitData *split) {
-        if (split) {
-                free(split->X_Train);
-                free(split->X_Test);
-                free(split->Y_Train);
-                free(split->Y_Test);
-                free(split);
-        }
-        split = NULL;
+        free(split->X_Train);
+        free(split->X_Test);
+        free(split->Y_Train);
+        free(split->Y_Test);
+        free(split);
 }
