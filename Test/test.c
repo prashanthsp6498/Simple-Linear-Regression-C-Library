@@ -91,8 +91,12 @@ int main() {
                 return -1;
         }
 
-        printf("RMSE: %.2f\t MSE: %.2f\t MAE: %.2f\n", rmse.accuracy,
-               mse.accuracy, mae.accuracy);
+        if (rmse.accuracy >= 0.8 || mae.accuracy >= 0.8 ||
+            mse.accuracy >= 0.8) {
+
+                printf("RMSE: %.2f%% \t MSE: %.2f%%\t MAE: %.2f%%\n",
+                       rmse.accuracy, mse.accuracy, mae.accuracy);
+        }
 
         // Free the memory allocations
         Free_Model(model);

@@ -120,7 +120,7 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                         float intercept_gradient = -error;
 
                         float lasso_penality =
-                            Lasso_Regularization(model, lambda);
+                            Ridge_Regularization(model, lambda);
                         /*
 
                         model->slope += lr * (error * X[i] - lasso_penality);
