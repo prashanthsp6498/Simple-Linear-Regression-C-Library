@@ -30,7 +30,7 @@ int main() {
         size_x = size_y = datasize;
 
         float train_ratio = 0.8;
-        int epochs = 10000;
+        int epochs = 1000;
         float lr = 0.01;
         float lambda1 = 0.1;
         float lambda2 = 0.1;
@@ -39,7 +39,8 @@ int main() {
             Split_Dataset(normalize->X, normalize->Y, size_x, train_ratio);
 
         Beta *model = Fit_Model(split_data->X_Train, split_data->Y_Train,
-                                size_x, size_y, epochs, lr, lambda1, lambda2);
+                                split_data->train_size, split_data->train_size,
+                                epochs, lr, lambda1, lambda2);
 
         // Learning rate
         printf("Slope: %.2f\t Intercept: %.2f\n", model->slope,

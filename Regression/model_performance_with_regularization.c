@@ -75,7 +75,7 @@ metricResult Root_Mean_Squared_Error(float *actualValue, float *predictValue,
                 sum += error * error;
         }
 
-        result.accuracy = sqrt(sum / x) * 100;
+        result.accuracy = (sqrt(sum / x)) * 100;
         result.is_valid = true;
         return result;
 }

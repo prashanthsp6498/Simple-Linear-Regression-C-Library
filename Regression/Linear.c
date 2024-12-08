@@ -17,6 +17,8 @@ Beta *Initialize_Model() {
                                 "'Initialize_Model()' func\n");
                 return NULL;
         }
+        model->slope = 0.0;
+        model->intercept = 0.0;
 
         model->slope = ((float)rand() / RAND_MAX) * 0.01;
         model->intercept = ((float)rand() / RAND_MAX) * 0.01;
@@ -104,7 +106,6 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                                  float lambda2) {
         // suppose assume epochs is 10,000 then iterates over 10000 times..
         for (int epoch = 0; epoch < epochs; epoch++) {
-                int count = 0;
                 for (size_t i = 0; i < n; i++) {
                         size_t rand_index = rand() % n;
                         float tempX = X[i];
@@ -116,20 +117,20 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                 }
 
                 for (size_t i = 0; i < n; i++) {
-                        count ++;
                         float prediction =
                             model->slope * X[i] + model->intercept;
                         float error = Y[i] - prediction;
 
-                        if (isnan(error) || isnan(model->slope) ||
-                            isnan(model->intercept)) {
+                        /*
+                        if (isnan(error) || isinf(error) ||
+                            isnan(model->slope) || isnan(model->intercept) ||
+                            isinf(model->slope) || isinf(model->intercept)) {
                                 fprintf(
                                     stderr,
                                     "Linear().Stochastic_Gradient_Descent() "
-                                    "Error.Line 116: Nan detected %.3f %.3f\n",
-                                    model->slope, model->intercept);
-                                return;
+                                    "Error Line.123: NAN / INF detected.\n");
                         }
+                        */
                         float slope_gradient = -error * X[i];
                         float intercept_gradient = -error;
 
@@ -145,11 +146,7 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                         model->slope -= lr * (slope_gradient + l3_penalty);
                         model->intercept -=
                             lr * (intercept_gradient + l3_penalty);
-
-                        printf("Epochs: %d, Epoch: %d Point: %zu, Slope Grad: %.5f, "
-                               "Intercept Grad: %.5f\n",
-                               epochs, count, i, slope_gradient, intercept_gradient);
-               }
+                }
         }
 }
 
