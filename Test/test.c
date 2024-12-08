@@ -30,22 +30,25 @@ int main() {
         size_x = size_y = datasize;
 
         float train_ratio = 0.8;
+        int epochs = 10000;
+        float lr = 0.01;
+        float lambda1 = 0.1;
+        float lambda2 = 0.1;
         // Facing problem  in split_data
         SplitData *split_data =
             Split_Dataset(normalize->X, normalize->Y, size_x, train_ratio);
 
-        Beta *model =
-            Fit_Model(split_data->X_Train, split_data->Y_Train, size_x, size_y);
+        Beta *model = Fit_Model(split_data->X_Train, split_data->Y_Train,
+                                size_x, size_y, epochs, lr, lambda1, lambda2);
 
         // Learning rate
-        float lr = 0.01;
-        int epochs = 10000;
         printf("Slope: %.2f\t Intercept: %.2f\n", model->slope,
                model->intercept);
 
-        float lambda = 0.1;
-        Stochastic_Gradient_Descent(normalize->X, normalize->Y, model, size_x,
-                                    epochs, lr, lambda);
+        /*
+            Stochastic_Gradient_Descent(normalize->X, normalize->Y, model,
+           size_x, epochs, lr, lambda1, lambda2);
+        */
         printf("\n\t\tAfter stochastic gradient\t\n Slope: %.2f\t Intercept: "
                "%.2f \t\n",
                model->slope, model->intercept);

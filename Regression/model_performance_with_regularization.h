@@ -15,5 +15,6 @@ metricResult Mean_Squared_Error(float *, float *, size_t);
 metricResult Root_Mean_Squared_Error(float *, float *, size_t);
 float Lasso_Regularization(Beta *, float);
 float Ridge_Regularization(Beta *, float);
+float ElasticNet_Regularization(Beta *, float, float);
 
 #endif

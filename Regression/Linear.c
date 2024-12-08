@@ -24,7 +24,8 @@ Beta *Initialize_Model() {
         return model;
 }
 
-Beta *Fit_Model(float X[], float y[], size_t n, size_t m) {
+Beta *Fit_Model(float X[], float y[], size_t n, size_t m, int epochs, float lr,
+                float lambda1, float lambda2) {
 
         Beta *model = Initialize_Model();
         if (X == NULL || y == NULL) {
@@ -62,10 +63,17 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m) {
                 return NULL;
         }
         // calculate slope and intercept
+        /*
+        printf("SumX: %f\t  sumXY: %f\t   sumY: %f\t    sumX2: %f slope: %.2f "
+               "intercept: "
+               "%.2f\n",
+               sumX, sumXY, sumY, sumX2, model->slope, model->intercept);
+        */
+        Stochastic_Gradient_Descent(X, y, model, n, epochs, lr, lambda1,
+                                    lambda2);
         model->slope = (n * sumXY - sumX * sumY) / denominator;
 
         model->intercept = (sumY - model->slope * sumX) / n;
-
         printf("SumX: %f\t  sumXY: %f\t   sumY: %f\t    sumX2: %f slope: %.2f "
                "intercept: "
                "%.2f\n",
@@ -92,9 +100,11 @@ float *Predict_Model(float X[], size_t size, Beta model) {
 }
 
 void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
-                                 int epochs, float lr, float lambda) {
+                                 int epochs, float lr, float lambda1,
+                                 float lambda2) {
         // suppose assume epochs is 10,000 then iterates over 10000 times..
         for (int epoch = 0; epoch < epochs; epoch++) {
+                int count = 0;
                 for (size_t i = 0; i < n; i++) {
                         size_t rand_index = rand() % n;
                         float tempX = X[i];
@@ -106,35 +116,40 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                 }
 
                 for (size_t i = 0; i < n; i++) {
+                        count ++;
                         float prediction =
                             model->slope * X[i] + model->intercept;
                         float error = Y[i] - prediction;
 
                         if (isnan(error) || isnan(model->slope) ||
                             isnan(model->intercept)) {
-                                printf("Nan detected %.3f %.3f\n", model->slope,
-                                       model->intercept);
+                                fprintf(
+                                    stderr,
+                                    "Linear().Stochastic_Gradient_Descent() "
+                                    "Error.Line 116: Nan detected %.3f %.3f\n",
+                                    model->slope, model->intercept);
                                 return;
                         }
                         float slope_gradient = -error * X[i];
                         float intercept_gradient = -error;
 
-                        float lasso_penality =
-                            Ridge_Regularization(model, lambda);
+                        float l3_penalty =
+                            ElasticNet_Regularization(model, lambda1, lambda2);
                         /*
 
-                        model->slope += lr * (error * X[i] - lasso_penality);
-                        model->intercept += lr * (error - lasso_penality);
+                        model->slope += lr * (error * X[i] -
+                        lasso_penality); model->intercept += lr * (error -
+                        lasso_penality);
                         */
 
-                        model->slope -= lr * (slope_gradient + lasso_penality);
-                        model->intercept -= lr * intercept_gradient;
-                        /*
-                        printf("Epoch: %d Data point: %zu, Error: %.4f, Updated
-                        Slope: %.4f, " "Updated Intercept: %.4f\n", epoch, i,
-                        error, model->slope, model->intercept);
-                        */
-                }
+                        model->slope -= lr * (slope_gradient + l3_penalty);
+                        model->intercept -=
+                            lr * (intercept_gradient + l3_penalty);
+
+                        printf("Epochs: %d, Epoch: %d Point: %zu, Slope Grad: %.5f, "
+                               "Intercept Grad: %.5f\n",
+                               epochs, count, i, slope_gradient, intercept_gradient);
+               }
         }
 }
 

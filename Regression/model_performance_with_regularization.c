@@ -82,8 +82,9 @@ metricResult Root_Mean_Squared_Error(float *actualValue, float *predictValue,
 
 // Regularization Methods: L1 and L2;
 float Lasso_Regularization(Beta *model, float lambda) {
-        if (!model) return  0.0;
-        
+        if (!model)
+                return 0.0;
+
         return lambda * (model->slope >= 0 ? 1 : -1);
 }
 
@@ -92,4 +93,14 @@ float Ridge_Regularization(Beta *model, float lambda) {
                 return 0.0;
 
         return lambda * (model->slope * model->slope);
+}
+
+float ElasticNet_Regularization(Beta *model, float lambda1, float lambda2) {
+
+        float l1_penalty =
+            lambda1 * (fabs(model->slope) + fabs(model->intercept));
+        float l2_penalty =
+            lambda2 * (pow(model->slope, 2) + pow(model->intercept, 2));
+
+        return l1_penalty + l2_penalty;
 }
