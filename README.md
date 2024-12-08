@@ -37,17 +37,25 @@ Project Root Directory
 
 Here, I've used bear for compilation.
 
+Step 1: If bear is not Installed, Install it or you can jump to Step 2 if its Installed,
+
 ```bash
 sudo apt install bear
 ```
 
-Next, Make a Directory name called 'build'. Then use bear, it will generates compile_commands.json file.
+Step 2: Use Bear to Generate .json file.
 
 ```bash
 bear -- make
 ```
 
-Then run the binary file.
+Step 3: use "make" command to compile .
+
+```bash
+make
+```
+
+Step 4: Run the generated Binary file.
 
 ```bash
 ./build/test
@@ -61,8 +69,7 @@ Use GDB for Debuging and Valgrind for Memory issues.
 gdb ./build/test
 ```
 
-Refer official documentation of GDB for more info.
-And for Valgrind
+Refer official documentation of GDB and Valgrind for more info.
 
 ```bash
 valgrind --leak-check=full --track-origins=yes -s ./build/test

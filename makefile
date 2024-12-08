@@ -8,12 +8,11 @@ SRCS = Test/test.c Regression/Linear.c EDA/DataAnalysis.c Regression/model_perfo
 OBJS = $(SRCS:.c=.o)
 
 # Targets
-all: build_dir build/test
+all: build/test
 
-build_dir: 
-	mkdir -p build
 
 build/test: $(OBJS)
+	mkdir -p build
 	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
 %.o: %.c
