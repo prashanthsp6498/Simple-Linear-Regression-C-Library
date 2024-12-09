@@ -121,7 +121,6 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                             model->slope * X[i] + model->intercept;
                         float error = Y[i] - prediction;
 
-                        /*
                         if (isnan(error) || isinf(error) ||
                             isnan(model->slope) || isnan(model->intercept) ||
                             isinf(model->slope) || isinf(model->intercept)) {
@@ -129,8 +128,8 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                                     stderr,
                                     "Linear().Stochastic_Gradient_Descent() "
                                     "Error Line.123: NAN / INF detected.\n");
+                                    return ;
                         }
-                        */
                         float slope_gradient = -error * X[i];
                         float intercept_gradient = -error;
 
