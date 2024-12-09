@@ -4,6 +4,7 @@
       "/usr/bin/gcc",
       "-g",
       "-Wall",
+      "-pg",
       "-Wextra",
       "-Werror",
       "-I.",
@@ -22,6 +23,7 @@
       "/usr/bin/gcc",
       "-g",
       "-Wall",
+      "-pg",
       "-Wextra",
       "-Werror",
       "-I.",
@@ -40,6 +42,7 @@
       "/usr/bin/gcc",
       "-g",
       "-Wall",
+      "-pg",
       "-Wextra",
       "-Werror",
       "-I.",
@@ -52,5 +55,24 @@
     "directory": "/home/hexa/LinRegC",
     "file": "/home/hexa/LinRegC/EDA/DataAnalysis.c",
     "output": "/home/hexa/LinRegC/EDA/DataAnalysis.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-pg",
+      "-Wextra",
+      "-Werror",
+      "-I.",
+      "-IRegression",
+      "-c",
+      "-o",
+      "Regression/model_performance_with_regularization.o",
+      "Regression/model_performance_with_regularization.c"
+    ],
+    "directory": "/home/hexa/LinRegC",
+    "file": "/home/hexa/LinRegC/Regression/model_performance_with_regularization.c",
+    "output": "/home/hexa/LinRegC/Regression/model_performance_with_regularization.o"
   }
 ]
