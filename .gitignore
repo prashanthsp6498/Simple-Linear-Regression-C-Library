@@ -1,0 +1,11 @@
+compile_commands.json
+build/
+massif.*
+gmon.out
+
+# System Generated files
+EDA/DataAnalysis.o
+Regression/Linear.o
+Regression/model_performance_with_regularization.o
+Test/test.o
+
