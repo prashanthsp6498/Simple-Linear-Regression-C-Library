@@ -31,10 +31,10 @@ int main() {
 
         float train_ratio = 0.8;
         int epochs = 1000;
-    // need to set a particular value
+        // need to set a particular value
         float lr = 0.05;
-        float lambda1 = 0.1;
-        float lambda2 = 0.1;
+        float lambda1 = 0.2;
+        float lambda2 = 0.2;
         // Facing problem  in split_data
         SplitData *split_data =
             Split_Dataset(normalize->X, normalize->Y, size_x, train_ratio);
