@@ -17,8 +17,6 @@ Beta *Initialize_Model() {
                                 "'Initialize_Model()' func\n");
                 return NULL;
         }
-        model->slope = 0.0;
-        model->intercept = 0.0;
 
         model->slope = ((float)rand() / RAND_MAX) * 0.01;
         model->intercept = ((float)rand() / RAND_MAX) * 0.01;
@@ -64,7 +62,6 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m, int epochs, float lr,
                 Free_Model(model);
                 return NULL;
         }
-        // calculate slope and intercept
         /*
         printf("SumX: %f\t  sumXY: %f\t   sumY: %f\t    sumX2: %f slope: %.2f "
                "intercept: "
@@ -128,7 +125,7 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                                     stderr,
                                     "Linear().Stochastic_Gradient_Descent() "
                                     "Error Line.123: NAN / INF detected.\n");
-                                    return ;
+                                return;
                         }
                         float slope_gradient = -error * X[i];
                         float intercept_gradient = -error;

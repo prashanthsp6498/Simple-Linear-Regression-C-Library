@@ -147,8 +147,8 @@ SplitData *Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
                 split_data->Y_Train[i] = Y[indicies[i]];
         }
         for (size_t i = 0; i < split_data->test_size; i++) {
-                *split_data->X_Test = X[indicies[split_data->train_size + i]];
-                *split_data->Y_Test = Y[indicies[split_data->train_size + i]];
+                split_data->X_Test[i] = X[indicies[split_data->train_size + i]];
+                split_data->Y_Test[i] = Y[indicies[split_data->train_size + i]];
         }
 
         free(indicies);

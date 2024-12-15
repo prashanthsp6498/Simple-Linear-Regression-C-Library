@@ -31,7 +31,8 @@ int main() {
 
         float train_ratio = 0.8;
         int epochs = 1000;
-        float lr = 0.01;
+    // need to set a particular value
+        float lr = 0.05;
         float lambda1 = 0.1;
         float lambda2 = 0.1;
         // Facing problem  in split_data
