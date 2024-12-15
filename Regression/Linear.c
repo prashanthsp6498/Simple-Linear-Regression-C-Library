@@ -62,12 +62,7 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m, int epochs, float lr,
                 Free_Model(model);
                 return NULL;
         }
-        /*
-        printf("SumX: %f\t  sumXY: %f\t   sumY: %f\t    sumX2: %f slope: %.2f "
-               "intercept: "
-               "%.2f\n",
-               sumX, sumXY, sumY, sumX2, model->slope, model->intercept);
-        */
+
         Stochastic_Gradient_Descent(X, y, model, n, epochs, lr, lambda1,
                                     lambda2);
         model->slope = (n * sumXY - sumX * sumY) / denominator;
@@ -101,7 +96,7 @@ float *Predict_Model(float X[], size_t size, Beta model) {
 void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                                  int epochs, float lr, float lambda1,
                                  float lambda2) {
-        // suppose assume epochs is 10,000 then iterates over 10000 times..
+        // suppose assume epochs is 10,000 then iterates over 10000 times...
         for (int epoch = 0; epoch < epochs; epoch++) {
                 for (size_t i = 0; i < n; i++) {
                         size_t rand_index = rand() % n;
