@@ -63,11 +63,11 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m, int epochs, float lr,
                 return NULL;
         }
 
-        Stochastic_Gradient_Descent(X, y, model, n, epochs, lr, lambda1,
-                                    lambda2);
         model->slope = (n * sumXY - sumX * sumY) / denominator;
 
         model->intercept = (sumY - model->slope * sumX) / n;
+        Stochastic_Gradient_Descent(X, y, model, n, epochs, lr, lambda1,
+                                    lambda2);
         printf("SumX: %f\t  sumXY: %f\t   sumY: %f\t    sumX2: %f slope: %.2f "
                "intercept: "
                "%.2f\n",
