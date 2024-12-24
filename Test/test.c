@@ -58,7 +58,6 @@ int main() {
         float *prediction = Predict_Model(split_data->X_Test, datasize, *model);
 
         // convert Normalized X_Test to Denormalized X_Test
-        // Fixed Bug in Cost_Function
         float *prediction_denorm_var =
             Denormalize(prediction, y_min, y_max, size_x);
         if (!prediction_denorm_var) {
@@ -80,7 +79,7 @@ int main() {
                        prediction_denorm_var[i]);
         }
 
-        // Accuracy Section
+        // Model Performance: i.e MSE RMSE and MAE
         metricResult rmse =
             Root_Mean_Squared_Error(split_data->Y_Test, prediction, size_y);
 
@@ -104,6 +103,7 @@ int main() {
         }
 
         // Free the memory allocations
+	// Use Valgrind to trace the memory allocations
         Free_Model(model);
         Free_Data(data);
         Free_Normalize(normalize);
