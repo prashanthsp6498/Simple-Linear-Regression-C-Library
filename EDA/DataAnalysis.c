@@ -1,5 +1,6 @@
 #include "DataAnalysis.h"
 #include "../Regression/Linear.h"
+#include "../Regression/memory_deallocation.h"
 #include <float.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -226,8 +227,8 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
         return norm;
 }
 
-// Denormalize is used to convert back to original value, i.e Example 0.80 ->
-// 989.00
+// Denormalize is used to convert back to original value, i.e Example 0.80
+// ->989.00
 float *Denormalize(float normalize_Value[], float y_max, float y_min,
                    size_t n) {
         float *original_value = (float *)malloc(n * sizeof(float));
