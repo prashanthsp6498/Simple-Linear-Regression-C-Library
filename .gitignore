@@ -7,5 +7,6 @@ gmon.out
 EDA/DataAnalysis.o
 Regression/Linear.o
 Regression/model_performance_with_regularization.o
+Regression/memory_deallocation.h
 Test/test.o
 
