@@ -1,5 +1,6 @@
 #include "../EDA/DataAnalysis.h"
 #include "../Regression/Linear.h"
+#include "../Regression/memory_deallocation.h"
 #include "../Regression/model_performance_with_regularization.h"
 #include <float.h>
 #include <stdbool.h>
@@ -95,15 +96,16 @@ int main() {
                 return -1;
         }
 
-        if (rmse.accuracy >= 0.8 || mae.accuracy >= 0.8 ||
-            mse.accuracy >= 0.8) {
+        if ((rmse.accuracy >= 0.8 && rmse.is_valid) ||
+            (mae.accuracy >= 0.8 && mae.is_valid) ||
+            (mse.accuracy >= 0.8 && mse.is_valid)) {
 
                 printf("RMSE: %.2f%% \t MSE: %.2f%%\t MAE: %.2f%%\n",
                        rmse.accuracy, mse.accuracy, mae.accuracy);
         }
 
         // Free the memory allocations
-	// Use Valgrind to trace the memory allocations
+        // Use Valgrind to trace the memory allocations
         Free_Model(model);
         Free_Data(data);
         Free_Normalize(normalize);
