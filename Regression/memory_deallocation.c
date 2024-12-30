@@ -1,15 +1,8 @@
+#include "../EDA/DataAnalysis.h"
 #include "Regression/Linear.h"
-#include <stdio.h>
 #include <stdlib.h>
 
-void Free_Model(Beta *model) {
-        if (model) {
-                free(model);
-        } else {
-                fprintf(stderr,
-                        "There is no memory blocks allocated for Model.\n");
-        }
-}
+void Free_Model(Beta *model) { free(model); }
 
 void Free_Data(getFile *data) {
         if (data) {

@@ -35,7 +35,7 @@ int main() {
         float train_ratio = 0.8;
         int epochs = 1000;
         // need to set a particular value
-        float lr = 0.05;
+        float lr = 0.01;
         float lambda1 = 0.2;
         float lambda2 = 0.2;
 
@@ -45,7 +45,6 @@ int main() {
         Beta *model = Fit_Model(split_data->X_Train, split_data->Y_Train,
                                 split_data->train_size, split_data->train_size,
                                 epochs, lr, lambda1, lambda2);
-
 
         /*
             Stochastic_Gradient_Descent(normalize->X, normalize->Y, model,

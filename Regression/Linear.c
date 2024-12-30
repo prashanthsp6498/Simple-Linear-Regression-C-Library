@@ -117,15 +117,18 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                             model->slope * X[i] + model->intercept;
                         float error = Y[i] - prediction;
 
-                        if (isnan(error) || isinf(error) ||
-                            isnan(model->slope) || isnan(model->intercept) ||
-                            isinf(model->slope) || isinf(model->intercept)) {
-                                fprintf(
-                                    stderr,
-                                    "Linear().Stochastic_Gradient_Descent() "
-                                    "Error Line.123: NAN / INF detected.\n");
-                                return;
-                        }
+                        // Below block is not correct, cause model.slope and
+                        // model.intercept is yet to calculate therefore, its no
+                        // point to check whether its inf or nan
+                        /*
+                                    if (isnan(model->slope) ||
+                           isnan(model->intercept) || isinf(model->slope) ||
+                           isinf(model->intercept)) { fprintf( stderr,
+                                                "Linear().Stochastic_Gradient_Descent()
+                           " "Error Line.123: NAN / INF detected. " "ERRMSG:
+                           %f\t %f\n", model->slope, model->intercept); return;
+                                    }
+                        */
                         float slope_gradient = -error * X[i];
                         float intercept_gradient = -error;
 
@@ -141,6 +144,14 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                         model->slope -= lr * (slope_gradient + l3_penalty);
                         model->intercept -=
                             lr * (intercept_gradient + l3_penalty);
+
+                        if (!model->slope || !model->intercept) {
+                                fprintf(stderr,
+                                        "Model is not calculated correctly: "
+                                        "error %f\t %f\n",
+                                        model->slope, model->intercept);
+                                return;
+                        }
                 }
         }
 }

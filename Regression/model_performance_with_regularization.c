@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 metricResult Mean_Squared_Error(float *actualValue, float *predictValue,
                                 size_t x) {
@@ -18,10 +19,10 @@ metricResult Mean_Squared_Error(float *actualValue, float *predictValue,
 
         for (size_t i = 0; i < x; i++) {
                 float error = actualValue[i] - predictValue[i];
-                sum += error * error;
+                sum += pow(error, 2);
         }
 
-        result.accuracy = (sum / x) * 100;
+        result.accuracy = sum / x;
         result.is_valid = true;
 
         return result;
@@ -42,10 +43,10 @@ metricResult Mean_Absolute_Error(float *actualValue, float *predictValue,
 
         for (size_t i = 0; i < x; i++) {
                 float error = actualValue[i] - predictValue[i];
-                sum += error * error;
+                sum += fabs(error);
         }
 
-        result.accuracy = (sum / x) * 100;
+        result.accuracy = sum / x;
         result.is_valid = true;
         return result;
 }
@@ -63,19 +64,11 @@ metricResult Root_Mean_Squared_Error(float *actualValue, float *predictValue,
                 return result;
         }
         for (size_t i = 0; i < x; i++) {
-                if (!actualValue || !predictValue) {
-                        fprintf(
-                            stderr,
-                            "model_performance_with_regularization().RMSE() "
-                            "Error Line.79: 'Value is null.\n'");
-                        result.is_valid = false;
-                        return result;
-                }
                 float error = actualValue[i] - predictValue[i];
                 sum += error * error;
         }
 
-        result.accuracy = (sqrt(sum / x)) * 100;
+        result.accuracy = sqrt(sum / x);
         result.is_valid = true;
         return result;
 }
