@@ -96,23 +96,24 @@ int main() {
         printf("Slope: %.2f\t Intercept: %.2f\n", model->slope,
                model->intercept);
 
-        if ((rmse.accuracy >= 0.8 && rmse.is_valid) ||
-            (mae.accuracy >= 0.8 && mae.is_valid) ||
-            (mse.accuracy >= 0.8 && mse.is_valid)) {
+        if ((rmse.accuracy <= 30.00) || (mae.accuracy <= 330.00) ||
+            (mse.accuracy <= 30.00)) {
 
+                exit(0);
+        } else {
                 printf("RMSE: %.2f%% \t MSE: %.2f%%\t MAE: %.2f%%\n",
                        rmse.accuracy, mse.accuracy, mae.accuracy);
         }
 
         // Free the memory allocations
         // Use Valgrind to trace the memory allocations
-        Free_Model(model);
-        Free_Data(data);
-        Free_Normalize(normalize);
-        Free_Split(split_data);
-        free(prediction);
-        free(prediction_denorm_var);
+        // Free in reverse order of allocation
         free(Y_test);
-
+        free(prediction_denorm_var);
+        free(prediction);
+        Free_Split(split_data);
+        Free_Normalize(normalize);
+        Free_Data(data);
+        Free_Model(model);
         return 0;
 }

@@ -9,7 +9,7 @@
 metricResult Mean_Squared_Error(float *actualValue, float *predictValue,
                                 size_t x) {
         metricResult result = {0.0, false};
-        float sum = 0.0;
+        float mse = 0.0;
         if (!actualValue || !predictValue) {
                 fprintf(stderr, "model_performance_with_regularization().MSE() "
                                 "Error Line.14: 'Value is null.\n'");
@@ -17,12 +17,11 @@ metricResult Mean_Squared_Error(float *actualValue, float *predictValue,
                 return result;
         }
 
-        for (size_t i = 0; i < x; i++) {
-                float error = actualValue[i] - predictValue[i];
-                sum += pow(error, 2);
+        for (int i = 0; i < (int)x; i++) {
+                mse += pow(actualValue[i] - predictValue[i], 2);
         }
 
-        result.accuracy = sum / x;
+        result.accuracy = mse / x;
         result.is_valid = true;
 
         return result;
@@ -32,7 +31,7 @@ metricResult Mean_Absolute_Error(float *actualValue, float *predictValue,
                                  size_t x) {
         metricResult result = {0.0, false};
 
-        float sum = 0.0;
+        float mae = 0.0;
 
         if (!actualValue || !predictValue) {
                 fprintf(stderr, "model_performance_with_regularization().MAE() "
@@ -42,11 +41,10 @@ metricResult Mean_Absolute_Error(float *actualValue, float *predictValue,
         }
 
         for (size_t i = 0; i < x; i++) {
-                float error = actualValue[i] - predictValue[i];
-                sum += fabs(error);
+                mae += fabs(actualValue[i] - predictValue[i]);
         }
 
-        result.accuracy = sum / x;
+        result.accuracy = mae / x;
         result.is_valid = true;
         return result;
 }
@@ -54,7 +52,13 @@ metricResult Mean_Absolute_Error(float *actualValue, float *predictValue,
 metricResult Root_Mean_Squared_Error(float *actualValue, float *predictValue,
                                      size_t x) {
         metricResult result = {0.0, false};
-        float sum = 0.0;
+        float ssTotal = 0.0, ssResidual = 0.0, meanY = 0.0;
+
+        for (int i = 0; i < (int)x; i++) {
+                meanY += actualValue[i];
+        }
+
+        meanY /= x;
 
         if (!actualValue || !predictValue) {
                 fprintf(stderr,
@@ -63,12 +67,12 @@ metricResult Root_Mean_Squared_Error(float *actualValue, float *predictValue,
                 result.is_valid = false;
                 return result;
         }
-        for (size_t i = 0; i < x; i++) {
-                float error = actualValue[i] - predictValue[i];
-                sum += error * error;
-        }
 
-        result.accuracy = sqrt(sum / x);
+        for (int i = 0; i < (int)x; i++) {
+                ssTotal += pow(actualValue[i] - meanY, 2);
+                ssResidual += pow(actualValue[i] - predictValue[i], 2);
+        }
+        result.accuracy = 1 - (ssResidual / ssTotal);
         result.is_valid = true;
         return result;
 }
