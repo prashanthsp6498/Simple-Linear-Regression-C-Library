@@ -1,3 +1,4 @@
+/* Linear.c */
 #include "Linear.h"
 #include "memory_deallocation.h"
 #include "model_performance_with_regularization.h"
@@ -11,6 +12,7 @@
 #include <string.h>
 #include <time.h>
 
+/* returns the model with memory allocation pointing to 0 */
 Beta *Initialize_Model() {
         Beta *model = (Beta *)calloc(1, sizeof(Beta));
         if (!model) {
@@ -25,6 +27,7 @@ Beta *Initialize_Model() {
         return model;
 }
 
+/* returns the slope and intercept */
 Beta *Fit_Model(float X[], float y[], size_t n, size_t m, int epochs, float lr,
                 float lambda1, float lambda2) {
 
@@ -77,7 +80,7 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m, int epochs, float lr,
         return model;
 }
 
-// Predict the Output
+/* returns the y = mx + c */
 float *Predict_Model(float X[], size_t size, Beta model) {
 
         float *prediction = (float *)malloc(size * sizeof(float));

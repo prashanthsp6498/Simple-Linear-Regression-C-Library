@@ -1,3 +1,4 @@
+/* Test file */
 #include "../EDA/DataAnalysis.h"
 #include "../Regression/Linear.h"
 #include "../Regression/memory_deallocation.h"
@@ -14,12 +15,13 @@ const char *FileName = "Datasets/winequality-white.csv";
 int main() {
         // Read file from the Dataset
         printf(
-            "Hi, Welcome to LinRegC Library: A simple and efficient tool for "
-            "simple linear regression\n");
+            "Hi, Welcome to LinRegC Library : A simple and efficient tool for "
+            "simple linear regression in C\n");
 
         /*FileName, IndependentVar, DependentVar */
         getFile *data = Read_Dataset(FileName, 10, 11);
 
+        /* returns the size of the dataset */
         int datasize = data->num_rows;
 
         float y_min, y_max;
@@ -36,7 +38,7 @@ int main() {
         float lr = 0.05;
         float lambda1 = 0.2;
         float lambda2 = 0.2;
-        // Facing problem  in split_data
+
         SplitData *split_data =
             Split_Dataset(normalize->X, normalize->Y, size_x, train_ratio);
 
@@ -44,9 +46,6 @@ int main() {
                                 split_data->train_size, split_data->train_size,
                                 epochs, lr, lambda1, lambda2);
 
-        // Learning rate
-        printf("Slope: %.2f\t Intercept: %.2f\n", model->slope,
-               model->intercept);
 
         /*
             Stochastic_Gradient_Descent(normalize->X, normalize->Y, model,
@@ -95,6 +94,8 @@ int main() {
 
                 return -1;
         }
+        printf("Slope: %.2f\t Intercept: %.2f\n", model->slope,
+               model->intercept);
 
         if ((rmse.accuracy >= 0.8 && rmse.is_valid) ||
             (mae.accuracy >= 0.8 && mae.is_valid) ||
