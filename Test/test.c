@@ -26,8 +26,6 @@ int main() {
 
         // Pass the data points to Normalization function.
         NormVar *normalize = Normalize(data->X, data->Y, datasize);
-        float y_max = normalize->y_max;
-        float y_min = normalize->y_min;
 
         size_t size_x, size_y;
         size_x = size_y = datasize;
@@ -54,33 +52,43 @@ int main() {
                "%.2f \t\n",
                model->slope, model->intercept);
 
-        float *prediction = Predict_Model(split_data->X_Test, datasize, *model);
+        float *prediction =
+            Predict_Model(split_data->X_Test, split_data->test_size, *model);
 
         // convert Normalized X_Test to Denormalized X_Test
-        float *prediction_denorm_var =
-            Denormalize(prediction, y_min, y_max, size_x);
-        if (!prediction_denorm_var) {
-                fprintf(stderr,
-                        "Test().denormVar Error: Memory allocation failed\n");
-                return EXIT_FAILURE;
-        }
-        float *Y_test = Denormalize(split_data->Y_Test, y_min, y_max, size_y);
-        if (!Y_test) {
+        float *denormalize_y_test =
+            Denormalize(split_data->Y_Test, normalize->y_min, normalize->y_max,
+                        split_data->test_size);
+        if (!denormalize_y_test) {
                 fprintf(stderr,
                         "Test().Y_Test Error: Memory allocation failed\n");
-                free(Y_test);
+                return EXIT_FAILURE;
         }
         // Facing issue: the normalize function is not implementing to
         // split_data->y_test and split_data->x_test
+        float *independent =
+            Denormalize(split_data->X_Test, normalize->x_min, normalize->x_max,
+                        split_data->test_size);
 
-        for (int i = 0; i < datasize; i++) {
-                printf("Independent Variable: %.2f\t Dependent Variable: "
-                       "%.2f\t Normalize Value: %.2f\t DenormlaizeDependent "
-                       "Value: %.2f\t Predicted "
-                       "Value: %.2f\n",
-                       data->X[i], data->Y[i], split_data->Y_Test[i], Y_test[i],
-                       prediction_denorm_var[i]);
+        printf(
+            " ---------------------------------------------------------------"
+            "---------------------------------------------------------------"
+            "-----------------------------------------------\n");
+        for (int i = 0; i < (int)split_data->test_size; i++) {
+                printf(
+                    "| IndependentVar: %.2f\t| DependentVar: %.2f\t| "
+                    " NormalizeIndepndentVar: %.2f |\t DenormalizeIndpendet: "
+                    "%.2f|\t"
+                    "NormalizeDependentVar: %.2f\t|  DenormalizeDpendentVar: "
+                    "%.2f\t|  PredictedVar: %.2f |\n",
+                    data->X[i], data->Y[i], split_data->X_Test[i],
+                    independent[i], split_data->Y_Test[i],
+                    denormalize_y_test[i], prediction[i]);
         }
+        printf(
+            " ---------------------------------------------------------------"
+            "---------------------------------------------------------------"
+            "-----------------------------------------------\n");
 
         // Model Performance: i.e MSE RMSE and MAE
         metricResult rmse =
@@ -99,21 +107,13 @@ int main() {
         }
         printf("Slope: %.2f\t Intercept: %.2f\n", model->slope,
                model->intercept);
-
-        if ((rmse.accuracy <= 30.00) || (mae.accuracy <= 30.00) ||
-            (mse.accuracy <= 30.00)) {
-
-                exit(0);
-        } else {
-                printf("RMSE: %.2f%% \t MSE: %.2f%%\t MAE: %.2f%%\n",
-                       rmse.accuracy, mse.accuracy, mae.accuracy);
-        }
+        printf("RMSE: %.2f%%\t MSE: %.2f%%\t MAE: %.2f%%\n", rmse.accuracy,
+               mse.accuracy, mae.accuracy);
 
         // Free the memory allocations
         // Use Valgrind to trace the memory allocations
         // Free in reverse order of allocation
-        free(Y_test);
-        free(prediction_denorm_var);
+        free(denormalize_y_test);
         free(prediction);
         Free_Split(split_data);
         Free_Normalize(normalize);

@@ -164,42 +164,36 @@ NormVar *Normalize(float X[], float Y[], size_t n) {
                         "Invalid input parameters in Normalize function");
                 return NULL;
         }
-
-        // Scaling is little difficult to implement for me ?
-        NormVar normalize;
-        normalize.x_max = X[0];
-        normalize.x_min = X[0];
-        normalize.y_max = Y[0];
-        normalize.y_min = Y[0];
-
-        for (int i = 0; i < (int)n; i++) {
-                // Update Y min/max
-                if (Y[i] < normalize.y_min)
-                        normalize.y_min = Y[i];
-                if (Y[i] > normalize.y_max)
-                        normalize.y_max = Y[i];
-                // Update X min/max
-                if (X[i] < normalize.x_min)
-                        normalize.x_min = X[i];
-                if (X[i] > normalize.x_max)
-                        normalize.x_max = X[i];
-        }
-
-        if (normalize.y_max <= normalize.y_min ||
-            normalize.x_max <= normalize.x_min) {
-                fprintf(stderr, "Error: Invalid min/max values found:\n");
-                fprintf(stderr, "Y range: [%.2f, %.2f]\n", normalize.y_min,
-                        normalize.y_max);
-                fprintf(stderr, "X range: [%.2f, %.2f]\n", normalize.x_min,
-                        normalize.x_max);
+        // Allocate memory for normalize function
+        NormVar *norm = (NormVar *)malloc(sizeof(NormVar));
+        if (!norm) {
+                fprintf(stderr, "Error Normalize().X().Y() returned null\n");
                 return NULL;
         }
 
-        // Allocate memory for normalize function
-        NormVar *norm = (NormVar *)malloc(sizeof(NormVar));
+        // Scaling is little difficult to implement for me ?
+        norm->x_max = norm->x_min = X[0];
+        norm->y_max = norm->y_min = Y[0];
 
-        if (!norm) {
-                fprintf(stderr, "Error Normalize().X().Y() returned null\n");
+        for (int i = 0; i < (int)n; i++) {
+                // Update Y min/max
+                if (Y[i] < norm->y_min)
+                        norm->y_min = Y[i];
+                if (Y[i] > norm->y_max)
+                        norm->y_max = Y[i];
+                // Update X min/max
+                if (X[i] < norm->x_min)
+                        norm->x_min = X[i];
+                if (X[i] > norm->x_max)
+                        norm->x_max = X[i];
+        }
+
+        if (norm->y_max <= norm->y_min || norm->x_max <= norm->x_min) {
+                fprintf(stderr, "Error: Invalid min/max values found:\n");
+                fprintf(stderr, "Y range: [%.2f, %.2f]\n", norm->y_min,
+                        norm->y_max);
+                fprintf(stderr, "X range: [%.2f, %.2f]\n", norm->x_min,
+                        norm->x_max);
                 return NULL;
         }
 
@@ -217,14 +211,14 @@ NormVar *Normalize(float X[], float Y[], size_t n) {
         for (size_t i = 0; i < n; i++) {
                 // make sure you are creating and initializing the pointer
                 // correctly
-                norm->X[i] = (normalize.x_max == normalize.x_min)
-                                 ? 0.5
-                                 : (X[i] - normalize.x_min) /
-                                       (normalize.x_max - normalize.x_min);
-                norm->Y[i] = (normalize.y_max == normalize.y_min)
-                                 ? 0.5
-                                 : (Y[i] - normalize.y_min) /
-                                       (normalize.y_max - normalize.y_min);
+                norm->X[i] =
+                    (norm->x_max == norm->x_min)
+                        ? 0.5
+                        : (X[i] - norm->x_min) / (norm->x_max - norm->x_min);
+                norm->Y[i] =
+                    (norm->y_max == norm->y_min)
+                        ? 0.5
+                        : (Y[i] - norm->y_min) / (norm->y_max - norm->y_min);
                 if (norm->X[i] < 0 || norm->X[i] > 1 || norm->Y[i] < 0 ||
                     norm->Y[i] > 1) {
                         fprintf(stderr,
@@ -236,18 +230,30 @@ NormVar *Normalize(float X[], float Y[], size_t n) {
                 }
         }
 
-        printf("Normlaize Function: \n");
-        printf("X: [%.2f, %.2f] -> [0, 1]\n", normalize.x_min, normalize.x_max);
-        printf("Y: [%.2f, %.2f] -> [0, 1]\n", normalize.y_min, normalize.y_max);
+        printf(
+            "\t --------------------------------------------------------------"
+            "---------------------------------------------------------------"
+            "------------------------------------------\n");
+        printf(
+            "\t|\t\t\t\t\t\t\t\t\tNormlaize Function:\t\t\t\t\t\t\t\t\t\t|\n");
+        printf("\t|\t\t\t\t\t\t\t\t\tX: [%.2f, %.2f] -> [0, 1] "
+               "\t\t\t\t\t\t\t\t\t|\n",
+               norm->x_min, norm->x_max);
+        printf("\t|\t\t\t\t\t\t\t\t\tY: [%.2f, %.2f] -> [0, 1] "
+               "\t\t\t\t\t\t\t\t\t|\n",
+               norm->y_min, norm->y_max);
+        printf(
+            "\t ----------------------------------------------------------"
+            "--------------------------------------------------------------"
+            "-----------------------------------------------\n");
 
         return norm;
 }
 
-// Denormalize is used to convert back to original value, i.e Example 0.80
-// ->989.00
+// Denormalize a value from [0, 1] to [y_min, y_max]
 float *Denormalize(float normalize_Value[], float y_max, float y_min,
                    size_t n) {
-        if (normalize_Value == NULL || n == 0) {
+        if (!normalize_Value || n == 0) {
                 fprintf(stderr,
                         "Invalid input parameters in Denormalize function\n");
                 return NULL;
@@ -257,9 +263,11 @@ float *Denormalize(float normalize_Value[], float y_max, float y_min,
                 float temp = y_max;
                 y_max = y_min;
                 y_min = temp;
+        printf(
+            "\t ==================================================================******* \tWARNING \t*******==================================================================\n");
                 fprintf(stderr,
-                        "Warning: y_min and y_max were swapped. Correct "
-                        "values: y_min = %.2f, y_max = %.2f\n",
+                        "\t =====================================>\t***Warning: y_min and y_max were swapped. Correct "
+                        "values: y_min = %.2f, y_max = %.2f*** <======================================= \n",
                         y_min, y_max);
         }
 
@@ -271,41 +279,48 @@ float *Denormalize(float normalize_Value[], float y_max, float y_min,
                 return NULL;
         }
 
-        float *original_value = (float *)malloc(n * sizeof(float));
-
+        float *original_value = malloc(n * sizeof(float));
         if (!original_value) {
                 fprintf(stderr, "Memory allocation failed in Denormalize\n");
                 return NULL;
         }
-        printf("Denormalization parameters:\n");
-        printf("y_min: %.2f, y_max: %.2f, range: %.2f\n", y_min, y_max,
-               y_max - y_min);
+
+        float range = y_max - y_min;
+
+        printf(
+            "\t ---------------------------------------------------------------"
+            "---------------------------------------------------------------"
+            "------------------------------------------\n");
+        printf("\t|\t\t\t\t\t\t\t\t\tDenormalization parameters:\t\t\t\t\t\t\t\t\t |\n");
+        printf("\t|\t\t\t\t\t\t\t\ty_min: %.2f, y_max: %.2f, range: %.2f\t\t\t\t\t\t\t\t\t |\n", y_min,
+               y_max, range);
 
         for (size_t i = 0; i < n; i++) {
-                if (normalize_Value[i] < 0 || normalize_Value[i] > 1) {
+                // Clamp values outside [0, 1] range
+                float clamped = normalize_Value[i];
+                if (clamped < 0 || clamped > 1) {
                         fprintf(stderr,
                                 "Warning: Normalized value at index %zu is "
                                 "outside [0,1] range: %.2f\n",
-                                i, normalize_Value[i]);
-                        float clamped =
-                            normalize_Value[i] < 0
-                                ? 0
-                                : (normalize_Value[i] > 1 ? 1
-                                                          : normalize_Value[i]);
-                        original_value[i] = clamped * (y_max - y_min) + y_min;
-                } else {
-
-                        original_value[i] =
-                            normalize_Value[i] * (y_max - y_min) + y_min;
+                                i, clamped);
+                        clamped = clamped < 0 ? 0 : (clamped > 1 ? 1 : clamped);
                 }
 
-                // Print first few values for debugging
+                // Denormalize
+                original_value[i] = clamped * range + y_min;
+
+                // Debugging first few values
                 if (i < 5) {
-                        printf(
-                            "Index %zu: Normalized=%.2f, Denormalized=%.2f\n",
-                            i, normalize_Value[i], original_value[i]);
+                        printf("\t|\t\t\t\t\t\t\t\tIndex %zu: Normalized=%.2f, Clamped=%.2f, "
+                               "Denormalized=%.2f\t\t\t\t\t\t |\n",
+                               i, normalize_Value[i], clamped,
+                               original_value[i]);
                 }
         }
+        printf(
+            "\t --------------------------------------------------------"
+            "---------------------------------------------------------------"
+            "-------------------------------------------------\n");
 
         return original_value;
 }

@@ -52,7 +52,15 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m, int epochs, float lr,
                 return NULL;
         }
 
-        printf("Size of both Dependent and Independent variable are equal\n");
+        printf(
+            "\t ---------------------------------------------------------------"
+            "----------------------------------------------------------------"
+            "----------------------------------------\n");
+        printf("\t| \t\t\t\t\t\t\tSize of both Dependent and Independent variable are equal\t\t\t\t\t\t\t|\n");
+        printf(
+            "\t|---------------------------------------------------------------"
+            "---------------------------------------------------------------"
+            "-----------------------------------------|\n");
         for (size_t i = 0; i < n; i++) {
                 sumXY += X[i] * y[i];
                 sumX += X[i];
@@ -72,10 +80,14 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m, int epochs, float lr,
         model->slope = (n * sumXY - sumX * sumY) / denominator;
 
         model->intercept = (sumY - model->slope * sumX) / n;
-        printf("SumX: %f\t  sumXY: %f\t   sumY: %f\t    sumX2: %f slope: %.2f "
-               "intercept: "
-               "%.2f\n",
+        printf("\t|\tSumX: %f |  \tsumXY: %f\t|   \tsumY: %f\t|   \tsumX2: %f\t| \tslope: %.2f\t| "
+               "\tintercept: "
+               "%.2f |\n",
                sumX, sumXY, sumY, sumX2, model->slope, model->intercept);
+        printf(
+            "\t ---------------------------------------------------------------"
+            "--------------------------------------------------------------"
+            "------------------------------------------\n");
 
         return model;
 }
