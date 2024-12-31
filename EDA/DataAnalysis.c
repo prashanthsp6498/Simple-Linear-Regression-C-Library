@@ -101,6 +101,7 @@ getFile *Read_Dataset(const char *file_name, const int independent_var,
 SplitData *Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
         SplitData *split_data = (SplitData *)malloc(sizeof(SplitData));
 
+        // If memory is not allocated
         if (!split_data) {
                 fprintf(stderr,
                         "Split_Dataset() Error: Memory is not allocated\n");
@@ -143,11 +144,11 @@ SplitData *Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
                 indicies[j] = temp;
         }
 
-        for (size_t i = 0; i < split_data->train_size; i++) {
+        for (int i = 0; i < (int)split_data->train_size; i++) {
                 split_data->X_Train[i] = X[indicies[i]];
                 split_data->Y_Train[i] = Y[indicies[i]];
         }
-        for (size_t i = 0; i < split_data->test_size; i++) {
+        for (int i = 0; i < (int)split_data->test_size; i++) {
                 split_data->X_Test[i] = X[indicies[split_data->train_size + i]];
                 split_data->Y_Test[i] = Y[indicies[split_data->train_size + i]];
         }
@@ -157,7 +158,7 @@ SplitData *Split_Dataset(float *X, float *Y, size_t n, float train_ratio) {
 }
 
 // returns the data-point into 0-1 for efficient result
-NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
+NormVar *Normalize(float X[], float Y[], size_t n) {
         if (X == NULL || Y == NULL || n == 0) {
                 fprintf(stderr,
                         "Invalid input parameters in Normalize function");
@@ -165,28 +166,32 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
         }
 
         // Scaling is little difficult to implement for me ?
-        *y_max = Y[0];
-        *y_min = Y[0];
-        float x_min = X[0];
-        float x_max = X[0];
+        NormVar normalize;
+        normalize.x_max = X[0];
+        normalize.x_min = X[0];
+        normalize.y_max = Y[0];
+        normalize.y_min = Y[0];
 
         for (int i = 0; i < (int)n; i++) {
                 // Update Y min/max
-                if (Y[i] < *y_min)
-                        *y_min = Y[i];
-                if (Y[i] > *y_max)
-                        *y_max = Y[i];
+                if (Y[i] < normalize.y_min)
+                        normalize.y_min = Y[i];
+                if (Y[i] > normalize.y_max)
+                        normalize.y_max = Y[i];
                 // Update X min/max
-                if (X[i] < x_min)
-                        x_min = X[i];
-                if (X[i] > x_max)
-                        x_max = X[i];
+                if (X[i] < normalize.x_min)
+                        normalize.x_min = X[i];
+                if (X[i] > normalize.x_max)
+                        normalize.x_max = X[i];
         }
 
-        if (*y_max <= *y_min || x_max <= x_min) {
+        if (normalize.y_max <= normalize.y_min ||
+            normalize.x_max <= normalize.x_min) {
                 fprintf(stderr, "Error: Invalid min/max values found:\n");
-                fprintf(stderr, "Y range: [%.2f, %.2f]\n", *y_min, *y_max);
-                fprintf(stderr, "X range: [%.2f, %.2f]\n", x_min, x_max);
+                fprintf(stderr, "Y range: [%.2f, %.2f]\n", normalize.y_min,
+                        normalize.y_max);
+                fprintf(stderr, "X range: [%.2f, %.2f]\n", normalize.x_min,
+                        normalize.x_max);
                 return NULL;
         }
 
@@ -212,8 +217,14 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
         for (size_t i = 0; i < n; i++) {
                 // make sure you are creating and initializing the pointer
                 // correctly
-                norm->X[i] = (X[i] - x_min) / (x_max - x_min);
-                norm->Y[i] = (Y[i] - *y_min) / (*y_max - *y_min);
+                norm->X[i] = (normalize.x_max == normalize.x_min)
+                                 ? 0.5
+                                 : (X[i] - normalize.x_min) /
+                                       (normalize.x_max - normalize.x_min);
+                norm->Y[i] = (normalize.y_max == normalize.y_min)
+                                 ? 0.5
+                                 : (Y[i] - normalize.y_min) /
+                                       (normalize.y_max - normalize.y_min);
                 if (norm->X[i] < 0 || norm->X[i] > 1 || norm->Y[i] < 0 ||
                     norm->Y[i] > 1) {
                         fprintf(stderr,
@@ -226,8 +237,8 @@ NormVar *Normalize(float X[], float Y[], size_t n, float *y_min, float *y_max) {
         }
 
         printf("Normlaize Function: \n");
-        printf("X: [%.2f, %.2f] -> [0, 1]\n", x_min, x_max);
-        printf("Y: [%.2f, %.2f] -> [0, 1]\n", *y_min, *y_max);
+        printf("X: [%.2f, %.2f] -> [0, 1]\n", normalize.x_min, normalize.x_max);
+        printf("Y: [%.2f, %.2f] -> [0, 1]\n", normalize.y_min, normalize.y_max);
 
         return norm;
 }

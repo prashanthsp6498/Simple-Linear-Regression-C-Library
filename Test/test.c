@@ -1,4 +1,4 @@
-/* Test file */
+/* Test.c */
 #include "../EDA/DataAnalysis.h"
 #include "../Regression/Linear.h"
 #include "../Regression/memory_deallocation.h"
@@ -24,20 +24,20 @@ int main() {
         /* returns the size of the dataset */
         int datasize = data->num_rows;
 
-        float y_min, y_max;
         // Pass the data points to Normalization function.
-        NormVar *normalize =
-            Normalize(data->X, data->Y, datasize, &y_min, &y_max);
+        NormVar *normalize = Normalize(data->X, data->Y, datasize);
+        float y_max = normalize->y_max;
+        float y_min = normalize->y_min;
 
         size_t size_x, size_y;
         size_x = size_y = datasize;
 
         float train_ratio = 0.8;
-        int epochs = 1000;
+        int epochs = 2000;
         // need to set a particular value
         float lr = 0.01;
-        float lambda1 = 0.2;
-        float lambda2 = 0.2;
+        float lambda1 = 0.5;
+        float lambda2 = 0.5;
 
         SplitData *split_data =
             Split_Dataset(normalize->X, normalize->Y, size_x, train_ratio);
@@ -70,11 +70,15 @@ int main() {
                         "Test().Y_Test Error: Memory allocation failed\n");
                 free(Y_test);
         }
+        // Facing issue: the normalize function is not implementing to
+        // split_data->y_test and split_data->x_test
 
         for (int i = 0; i < datasize; i++) {
                 printf("Independent Variable: %.2f\t Dependent Variable: "
-                       "%.2f\t Original Value: %.2f\t Predicted Value: %.2f\n",
-                       data->X[i], data->Y[i], Y_test[i],
+                       "%.2f\t Normalize Value: %.2f\t DenormlaizeDependent "
+                       "Value: %.2f\t Predicted "
+                       "Value: %.2f\n",
+                       data->X[i], data->Y[i], split_data->Y_Test[i], Y_test[i],
                        prediction_denorm_var[i]);
         }
 
@@ -96,7 +100,7 @@ int main() {
         printf("Slope: %.2f\t Intercept: %.2f\n", model->slope,
                model->intercept);
 
-        if ((rmse.accuracy <= 30.00) || (mae.accuracy <= 330.00) ||
+        if ((rmse.accuracy <= 30.00) || (mae.accuracy <= 30.00) ||
             (mse.accuracy <= 30.00)) {
 
                 exit(0);
