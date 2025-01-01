@@ -48,9 +48,6 @@ int main() {
             Stochastic_Gradient_Descent(normalize->X, normalize->Y, model,
            size_x, epochs, lr, lambda1, lambda2);
         */
-        printf("\n\t\tAfter stochastic gradient\t\n Slope: %.2f\t Intercept: "
-               "%.2f \t\n",
-               model->slope, model->intercept);
 
         float *prediction =
             Predict_Model(split_data->X_Test, split_data->test_size, *model);
@@ -69,21 +66,37 @@ int main() {
         float *independent =
             Denormalize(split_data->X_Test, normalize->x_min, normalize->x_max,
                         split_data->test_size);
+        float *Denormalize_prediction =
+            Denormalize(prediction, normalize->y_min, normalize->y_max,
+                        split_data->test_size);
+    printf("\n");
+        printf("\t "
+               "+++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+               "+++++++++++++++++| \tOutPut\t"
+               "\t|++++++++++++++++++++++++++++++++++++++++++++++++++++"
+               "++++++++++++++++++++\n");
 
         printf(
-            " ---------------------------------------------------------------"
+            "\t ---------------------------------------------------------------"
             "---------------------------------------------------------------"
-            "-----------------------------------------------\n");
+            "--------------------------------------------------\n");
+        printf("\t|var_x \t| var_y \t| Normalize_var_x \t|  Denormalize_var_x "
+               "\t| Normalize_var_y \t| Denormalize_var_y \t| "
+               "Normalize_Prediction: \t| Denormalize_Prediction  |\n");
+        printf("\t| "
+               "---------------------------------------------------------------"
+               "---------------------------------------------------------------"
+               "--------------------------------------------------|\n");
         for (int i = 0; i < (int)split_data->test_size; i++) {
-                printf(
-                    "| IndependentVar: %.2f\t| DependentVar: %.2f\t| "
-                    " NormalizeIndepndentVar: %.2f |\t DenormalizeIndpendet: "
-                    "%.2f|\t"
-                    "NormalizeDependentVar: %.2f\t|  DenormalizeDpendentVar: "
-                    "%.2f\t|  PredictedVar: %.2f |\n",
-                    data->X[i], data->Y[i], split_data->X_Test[i],
-                    independent[i], split_data->Y_Test[i],
-                    denormalize_y_test[i], prediction[i]);
+                printf("\t| %.2f\t| var_y: %.2f\t| "
+                       "var_x(Norm): %.2f \t| var_x(Denorm): %.2f\t|"
+                       "var_y(Norm): %.2f\t| var_y(Denorm): "
+                       "%.2f\t| Prediction(Norm): %.2f \t| Prediction(Denorm): "
+                       "%.2f|\n",
+                       data->X[i], data->Y[i], split_data->X_Test[i],
+                       independent[i], split_data->Y_Test[i],
+                       denormalize_y_test[i], prediction[i],
+                       Denormalize_prediction[i]);
         }
         printf(
             " ---------------------------------------------------------------"
@@ -105,15 +118,29 @@ int main() {
 
                 return -1;
         }
-        printf("Slope: %.2f\t Intercept: %.2f\n", model->slope,
+        printf("\t \tSlope: %.2f\t Intercept: %.2f\n", model->slope,
                model->intercept);
-        printf("RMSE: %.2f%%\t MSE: %.2f%%\t MAE: %.2f%%\n", rmse.accuracy,
-               mse.accuracy, mae.accuracy);
+
+        printf(
+            "\t ---------------------------------------------------------------"
+            "---------------------------------------------------------------"
+            "------------------------------------------\n");
+        printf(
+            "\t| \t\t\t\t\t\t\t\t\tAccuracy Metricis\t\t\t\t\t\t\t\t\t\t |\n");
+        printf("\n");
+        printf("\t|\t\t\t\t\t\t\tRMSE: %.2f%%\t MSE: %.2f%%\t MAE: %.2f%% "
+               "\t\t\t\t\t\t\t\t\t |\n",
+               rmse.accuracy, mse.accuracy, mae.accuracy);
+        printf(
+            "\t ---------------------------------------------------------------"
+            "---------------------------------------------------------------"
+            "------------------------------------------\n");
 
         // Free the memory allocations
         // Use Valgrind to trace the memory allocations
         // Free in reverse order of allocation
         free(denormalize_y_test);
+        free(Denormalize_prediction);
         free(prediction);
         Free_Split(split_data);
         Free_Normalize(normalize);

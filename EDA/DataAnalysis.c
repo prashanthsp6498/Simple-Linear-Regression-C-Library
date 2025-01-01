@@ -242,10 +242,9 @@ NormVar *Normalize(float X[], float Y[], size_t n) {
         printf("\t|\t\t\t\t\t\t\t\t\tY: [%.2f, %.2f] -> [0, 1] "
                "\t\t\t\t\t\t\t\t\t|\n",
                norm->y_min, norm->y_max);
-        printf(
-            "\t ----------------------------------------------------------"
-            "--------------------------------------------------------------"
-            "-----------------------------------------------\n");
+        printf("\t ----------------------------------------------------------"
+               "--------------------------------------------------------------"
+               "-----------------------------------------------\n");
 
         return norm;
 }
@@ -263,12 +262,18 @@ float *Denormalize(float normalize_Value[], float y_max, float y_min,
                 float temp = y_max;
                 y_max = y_min;
                 y_min = temp;
-        printf(
-            "\t ==================================================================******* \tWARNING \t*******==================================================================\n");
-                fprintf(stderr,
-                        "\t =====================================>\t***Warning: y_min and y_max were swapped. Correct "
-                        "values: y_min = %.2f, y_max = %.2f*** <======================================= \n",
-                        y_min, y_max);
+                printf("\t "
+                       "======================================================="
+                       "==========*******| \tWARNING "
+                       "\t|*******============================================="
+                       "====================\n");
+                fprintf(
+                    stderr,
+                    "\t =====================================>\t***Warning: "
+                    "y_min and y_max were swapped. Correct "
+                    "values: y_min = %.2f, y_max = %.2f*** "
+                    "<======================================= \n",
+                    y_min, y_max);
         }
 
         if (y_max == y_min) {
@@ -291,9 +296,11 @@ float *Denormalize(float normalize_Value[], float y_max, float y_min,
             "\t ---------------------------------------------------------------"
             "---------------------------------------------------------------"
             "------------------------------------------\n");
-        printf("\t|\t\t\t\t\t\t\t\t\tDenormalization parameters:\t\t\t\t\t\t\t\t\t |\n");
-        printf("\t|\t\t\t\t\t\t\t\ty_min: %.2f, y_max: %.2f, range: %.2f\t\t\t\t\t\t\t\t\t |\n", y_min,
-               y_max, range);
+        printf("\t|\t\t\t\t\t\t\t\tDenormalization "
+               "parameters (Used for Debugging purpose):\t\t\t\t\t\t |\n");
+        printf("\t|\t\t\t\t\t\t\t\ty_min: %.2f, y_max: %.2f, range: "
+               "%.2f\t\t\t\t\t\t\t\t\t |\n",
+               y_min, y_max, range);
 
         for (size_t i = 0; i < n; i++) {
                 // Clamp values outside [0, 1] range
@@ -311,16 +318,16 @@ float *Denormalize(float normalize_Value[], float y_max, float y_min,
 
                 // Debugging first few values
                 if (i < 5) {
-                        printf("\t|\t\t\t\t\t\t\t\tIndex %zu: Normalized=%.2f, Clamped=%.2f, "
+                        printf("\t|\t\t\t\t\t\t\t\tIndex %zu: Normalized=%.2f, "
+                               "Clamped=%.2f, "
                                "Denormalized=%.2f\t\t\t\t\t\t |\n",
                                i, normalize_Value[i], clamped,
                                original_value[i]);
                 }
         }
-        printf(
-            "\t --------------------------------------------------------"
-            "---------------------------------------------------------------"
-            "-------------------------------------------------\n");
+        printf("\t --------------------------------------------------------"
+               "---------------------------------------------------------------"
+               "-------------------------------------------------\n");
 
         return original_value;
 }
