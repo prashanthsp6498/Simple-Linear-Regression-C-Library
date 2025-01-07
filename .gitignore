@@ -8,5 +8,7 @@ EDA/DataAnalysis.o
 Regression/Linear.o
 Regression/model_performance_with_regularization.o
 Regression/memory_deallocation.h
+Regression/memory_deallocation.o
+.cache/
 Test/test.o
 
