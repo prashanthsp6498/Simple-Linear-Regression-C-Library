@@ -56,7 +56,8 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m, int epochs, float lr,
             "\t ---------------------------------------------------------------"
             "----------------------------------------------------------------"
             "----------------------------------------\n");
-        printf("\t| \t\t\t\t\t\t\tSize of both Dependent and Independent variable are equal\t\t\t\t\t\t\t|\n");
+        printf("\t| \t\t\t\t\t\t\tSize of both Dependent and Independent "
+               "variable are equal\t\t\t\t\t\t\t|\n");
         printf(
             "\t|---------------------------------------------------------------"
             "---------------------------------------------------------------"
@@ -80,7 +81,8 @@ Beta *Fit_Model(float X[], float y[], size_t n, size_t m, int epochs, float lr,
         model->slope = (n * sumXY - sumX * sumY) / denominator;
 
         model->intercept = (sumY - model->slope * sumX) / n;
-        printf("\t|\tSumX: %f |  \tsumXY: %f\t|   \tsumY: %f\t|   \tsumX2: %f\t| \tslope: %.2f\t| "
+        printf("\t|\tSumX: %f |  \tsumXY: %f\t|   \tsumY: %f\t|   \tsumX2: "
+               "%f\t| \tslope: %.2f\t| "
                "\tintercept: "
                "%.2f |\n",
                sumX, sumXY, sumY, sumX2, model->slope, model->intercept);
@@ -129,18 +131,6 @@ void Stochastic_Gradient_Descent(float X[], float Y[], Beta *model, size_t n,
                             model->slope * X[i] + model->intercept;
                         float error = Y[i] - prediction;
 
-                        // Below block is not correct, cause model.slope and
-                        // model.intercept is yet to calculate therefore, its no
-                        // point to check whether its inf or nan
-                        /*
-                                    if (isnan(model->slope) ||
-                           isnan(model->intercept) || isinf(model->slope) ||
-                           isinf(model->intercept)) { fprintf( stderr,
-                                                "Linear().Stochastic_Gradient_Descent()
-                           " "Error Line.123: NAN / INF detected. " "ERRMSG:
-                           %f\t %f\n", model->slope, model->intercept); return;
-                                    }
-                        */
                         float slope_gradient = -error * X[i];
                         float intercept_gradient = -error;
 

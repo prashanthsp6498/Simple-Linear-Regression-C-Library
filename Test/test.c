@@ -100,7 +100,8 @@ int main() {
         }
         printf(
             "\t ---------------------------------------------------------------"
-            "-------------------------------------------------------------------"
+            "------------------------------------------------------------------"
+            "-"
             "-----------------------------------------------\n");
 
         // Model Performance: i.e MSE RMSE and MAE
@@ -142,9 +143,9 @@ int main() {
         free(denormalize_y_test);
         free(Denormalize_prediction);
         free(prediction);
+        Free_Model(model);
         Free_Split(split_data);
         Free_Normalize(normalize);
         Free_Data(data);
-        Free_Model(model);
         return 0;
 }
