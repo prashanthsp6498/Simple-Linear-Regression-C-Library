@@ -31,7 +31,7 @@ int main() {
         size_x = size_y = datasize;
 
         float train_ratio = 0.8;
-        int epochs = 2000;
+        int epochs = 1000;
         // need to set a particular value
         float lr = 0.01;
         float lambda1 = 0.5;
@@ -107,6 +107,8 @@ int main() {
         // Model Performance: i.e MSE RMSE and MAE
         metricResult rmse =
             Root_Mean_Squared_Error(split_data->Y_Test, prediction, size_y);
+        metricResult r_square =
+            R_Square(split_data->Y_Test, prediction, size_y);
 
         metricResult mse =
             Mean_Absolute_Error(split_data->Y_Test, prediction, size_y);
@@ -126,12 +128,13 @@ int main() {
             "\t ---------------------------------------------------------------"
             "---------------------------------------------------------------"
             "------------------------------------------\n");
-        printf(
-            "\t| \t\t\t\t\t\t\t\t\tAccuracy Metricis\t\t\t\t\t\t\t\t\t\t |\n");
+        printf("\t| \t\t\t\t\t\t\t\t\tAccuracy Metricis\t\t\t\t\t\t\t\t\t\t\t "
+               "|\n");
         printf("\n");
-        printf("\t|\t\t\t\t\t\t\tRMSE: %.2f%%\t MSE: %.2f%%\t MAE: %.2f%% "
-               "\t\t\t\t\t\t\t\t\t |\n",
-               rmse.accuracy, mse.accuracy, mae.accuracy);
+        printf("\t|\t\t\t\t\t\t\tRMSE: %.2f%%\t R-Square: %.2f%%\t MSE: "
+               "%.2f%%\t MAE: %.2f%% "
+               "\t\t\t\t\t\t |\n",
+               rmse.accuracy , r_square.accuracy * 100, mse.accuracy, mae.accuracy);
         printf(
             "\t ---------------------------------------------------------------"
             "---------------------------------------------------------------"

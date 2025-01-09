@@ -21,7 +21,7 @@ metricResult Mean_Squared_Error(float *actualValue, float *predictValue,
                 mse += pow(actualValue[i] - predictValue[i], 2);
         }
 
-        result.accuracy = mse / x;
+        result.accuracy = (mse / x);
         result.is_valid = true;
 
         return result;
@@ -49,16 +49,42 @@ metricResult Mean_Absolute_Error(float *actualValue, float *predictValue,
         return result;
 }
 
-metricResult Root_Mean_Squared_Error(float *actualValue, float *predictValue,
-                                     size_t x) {
+metricResult R_Square(float *actualValue, float *predictValue, size_t x) {
         metricResult result = {0.0, false};
         float ssTotal = 0.0, ssResidual = 0.0, meanY = 0.0;
 
         for (int i = 0; i < (int)x; i++) {
                 meanY += actualValue[i];
         }
+        if (!actualValue || !predictValue) {
+                fprintf(stderr,
+                        "model_performance_with_regularization().RMSE() "
+                        "Error Line.79: 'Value is null.\n'");
+                result.is_valid = false;
+                return result;
+        }
+        for (int i = 0; i < (int)x; i++) {
+                ssTotal += pow(actualValue[i] - meanY, 2);
+                ssResidual += pow(actualValue[i] - predictValue[i], 2);
+        }
+        result.accuracy = 1 - (ssResidual / ssTotal);
+        result.is_valid = true;
+        return result;
+}
 
-        meanY /= x;
+metricResult Root_Mean_Squared_Error(float *actualValue, float *predictValue,
+                                     size_t x) {
+        metricResult result = {0.0, false};
+        // float ssTotal = 0.0, ssResidual = 0.0;
+        float ssResidual = 0.0;
+
+        /*
+            for (int i = 0; i < (int)x; i++) {
+                    meanY += actualValue[i];
+            }
+
+            meanY /= x;
+            */
 
         if (!actualValue || !predictValue) {
                 fprintf(stderr,
@@ -69,10 +95,14 @@ metricResult Root_Mean_Squared_Error(float *actualValue, float *predictValue,
         }
 
         for (int i = 0; i < (int)x; i++) {
-                ssTotal += pow(actualValue[i] - meanY, 2);
+                /*
+                        ssTotal += pow(actualValue[i] - meanY, 2);
+                        ssResidual += pow(actualValue[i] - predictValue[i], 2);
+                */
                 ssResidual += pow(actualValue[i] - predictValue[i], 2);
         }
-        result.accuracy = 1 - (ssResidual / ssTotal);
+        // result.accuracy = 1 - (ssResidual / ssTotal);
+        result.accuracy = sqrt(ssResidual / x);
         result.is_valid = true;
         return result;
 }
