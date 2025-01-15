@@ -100,7 +100,7 @@ Refer to the [official Valgrind documentation](https://valgrind.org/docs/) for f
 
 ## License
 
-The project is licensed under the **MIT License** (or replace with the applicable license, e.g., Apache License 2.0). Check the `License` file in the root directory for more details.
+The project is licensed under the **MIT License**. Check the `License` file in the root directory for more details.
 
 ---
 
