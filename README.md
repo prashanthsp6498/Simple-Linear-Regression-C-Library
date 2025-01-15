@@ -47,7 +47,7 @@ Project Root Directory
 ## How to use?
 
 1. Include necessary Header files 
-![header files](/images/headerfiles.png)
+![HeaderFile](images/HeaderFile.png)
 
 
 ---
