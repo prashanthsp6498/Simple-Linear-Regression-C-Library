@@ -12,7 +12,7 @@ Perfect for developers seeking a foundational yet robust tool for regression tas
 
 ## Table of Contents
 1. [Project Structure](#project-structure)  
-2. [How to Compile?](#how-to-compile)  
+2. [How to Use?](#how-to-use)  
 3. [How to Debug or Trace Memory Allocation Errors?](#how-to-debug-or-trace-memory-allocation-errors)  
 4. [File Descriptions](#file-descriptions)  
 5. [License](#license)  
@@ -44,27 +44,11 @@ Project Root Directory
 
 ---
 
-## How to Compile?
+## How to use?
 
-### Step 1: Install `bear` (if not already installed)
-```bash
-sudo apt install bear
-```
+1. Include necessary Header files 
+![header files](images/headerfiles.png)
 
-### Step 2: Generate `compile_commands.json` using Bear
-```bash
-bear -- make
-```
-
-### Step 3: Use `make` to compile the project
-```bash
-make
-```
-
-### Step 4: Run the generated binary file
-```bash
-./build/test
-```
 
 ---
 
