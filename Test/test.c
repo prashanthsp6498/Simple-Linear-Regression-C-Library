@@ -18,7 +18,7 @@ int main() {
             "Hi, Welcome to LinRegC Library : A simple and efficient tool for "
             "simple linear regression in C\n");
 
-        /*FileName, IndependentVar, DependentVar */
+        /*function params: FileName, IndependentVar, DependentVar */
         getFile *data = Read_Dataset(FileName, 10, 11);
 
         /* returns the size of the dataset */
@@ -30,11 +30,10 @@ int main() {
         size_t size_x, size_y;
         size_x = size_y = datasize;
 
-        float train_ratio = 0.8;
+        float train_ratio = 0.8; // Use 80/20 which is for train and test
         int epochs = 1000;
-        // need to set a particular value
-        float lr = 0.01;
-        float lambda1 = 0.5;
+        float lr = 0.01; // Adjust lr based on the prediction you are getting.
+        float lambda1 = 0.5; // Adjust it to get accuracy
         float lambda2 = 0.5;
 
         SplitData *split_data =
@@ -43,11 +42,6 @@ int main() {
         Beta *model = Fit_Model(split_data->X_Train, split_data->Y_Train,
                                 split_data->train_size, split_data->train_size,
                                 epochs, lr, lambda1, lambda2);
-
-        /*
-            Stochastic_Gradient_Descent(normalize->X, normalize->Y, model,
-           size_x, epochs, lr, lambda1, lambda2);
-        */
 
         float *prediction =
             Predict_Model(split_data->X_Test, split_data->test_size, *model);
@@ -121,28 +115,31 @@ int main() {
 
                 return -1;
         }
-        printf("\t \tSlope: %.2f\t Intercept: %.2f\n", model->slope,
-               model->intercept);
 
         printf(
             "\t ---------------------------------------------------------------"
             "---------------------------------------------------------------"
             "------------------------------------------\n");
-        printf("\t| \t\t\t\t\t\t\t\t\tAccuracy Metricis\t\t\t\t\t\t\t\t\t\t\t "
+        printf("\t| \t\t\t\t\t\t\t\t\tAccuracy Metricis\t\t\t\t\t\t\t\t\t\t "
                "|\n");
         printf("\n");
         printf("\t|\t\t\t\t\t\t\tRMSE: %.2f%%\t R-Square: %.2f%%\t MSE: "
                "%.2f%%\t MAE: %.2f%% "
                "\t\t\t\t\t\t |\n",
-               rmse.accuracy , r_square.accuracy * 100, mse.accuracy, mae.accuracy);
+               rmse.accuracy, r_square.accuracy * 100, mse.accuracy,
+               mae.accuracy);
         printf(
             "\t ---------------------------------------------------------------"
             "---------------------------------------------------------------"
             "------------------------------------------\n");
+        printf("\t \tSlope: %.2f\t Intercept: %.2f\n", model->slope,
+               model->intercept);
 
-        // Free the memory allocations
-        // Use Valgrind to trace the memory allocations
-        // Free in reverse order of allocation
+        /* "" Free the memory allocation "" */
+        /*
+             Use Valgrind tool to trace the memory allocations
+             Free in reverse order of allocation
+        */
         free(denormalize_y_test);
         free(Denormalize_prediction);
         free(prediction);
