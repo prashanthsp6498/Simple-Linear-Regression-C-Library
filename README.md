@@ -46,9 +46,63 @@ Project Root Directory
 
 ## How to use?
 
-1. Include necessary Header files 
+### 1. Include necessary Header files 
 
 ![HeaderFile](images/HeaderFile.png)
+
+Below is the example of how to use this library.
+```bash
+const char *filename = "your_file_name";
+int main(){
+   
+    /* Read the Dataset */
+    getFile *read_data = Read_Dataset(filename, "speicfy the Independent_var col", "specify the Dependent_var col");
+    
+    /* Apply Normalization */
+    NormVar *normalize = Normalize(read_data->x, read_data->y, read_data->num_rows);
+    
+    float train_ration = 0.8, lr = 0.01, lambda1 = 0.05, lambda2 = 0.05;
+
+    /* split the dataset */
+    SplitData *split_data = Split_Dataset(normalize->X, normalize->Y, size_x, train_ratio);
+
+    /* fitting model */
+    Beta *model = Fit_Model(split_data->X_Train, split_data->Y_Train, split_data->train_size, split_data->train_size, epochs, lr, lambda1, lambda2);
+    
+    /* Make predictions */
+    float *prediction = Prediction_Model(split_data->X_Test, split_data->test_size, *model);
+    
+    ...
+
+}
+```
+
+The above values are normazlied so its scale in b/n 0 to 1. To Denormalize check below example,
+```bash
+{
+    .....
+    
+    float *denormalize = Denormalize(prediction, normalize->y_min, normalize->y_max, split_data->test_size);
+    
+    .....
+}
+```
+
+
+To find the models accuracy, use the following methods,
+```bash
+{
+    ....
+    
+    metricResult rmse = Root_Mean_Square_Error(split_data->Y_Test, predictions, size_y);
+    metricResult r_squre = R_Square(split_data->Y_Test, predictions, size_y);
+    metricResult mse = Mean_Square_Error(split_data->Y_Test, predictions, size_y);
+    metricResult mae = Mean_Absolute_Error(split_data->Y_Test, predictions, size_y);
+
+    ....
+
+}
+```
 
 
 ---
