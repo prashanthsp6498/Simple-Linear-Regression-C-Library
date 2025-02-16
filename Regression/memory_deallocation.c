@@ -31,5 +31,4 @@ void Free_Split(SplitData *split) {
         free(split->Y_Train);
         free(split->Y_Test);
         free(split);
-        split = NULL;
 }
