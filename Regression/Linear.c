@@ -21,8 +21,8 @@ Beta *Initialize_Model() {
                 return NULL;
         }
 
-        model->slope = ((float)rand() / RAND_MAX) * 0.01;
-        model->intercept = ((float)rand() / RAND_MAX) * 0.01;
+        model->slope = (float)(rand() / RAND_MAX) * 0.01;
+        model->intercept = (float)(rand() / RAND_MAX) * 0.01;
 
         return model;
 }
